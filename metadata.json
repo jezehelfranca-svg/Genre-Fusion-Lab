@@ -1,0 +1,6 @@
+{
+  "name": "Genre Fusion Lab",
+  "description": "An AI-powered dashboard that invents new musical genres by blending selected music styles.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
