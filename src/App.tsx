@@ -41,7 +41,10 @@ import {
   ListMusic,
   BookOpen,
   Users,
-  Camera
+  Camera,
+  Search,
+  Flame,
+  Zap
 } from 'lucide-react';
 import { genres } from './genres';
 import {
@@ -345,6 +348,16 @@ function extractFictionalBandPrompt(markdown: string | null, bandName: string, s
   return `A raw, high-fashion dramatic front-facing press group photo of the musicians from '${bandName}', posing within an ultra-minimalist raw concrete underground studio. Ambient atmospheric dust and smoky haze backlit by moody pink, violet, and copper lasers. The band members wear avant-garde tailored organic-wire style attire, holding sleek custom synth controllers. Captured on an 85mm medium format camera, crisp cinematic details, dramatic shadow play, exceptional professional layout, 16:9 ratio`;
 }
 
+// Extract the "Creative Catalyst" origin-spark line injected by the server prompt
+function extractCatalyst(markdown: string | null): string {
+  if (!markdown) return "";
+  const match = markdown.match(/\*\*\s*Creative Catalyst\s*:?\s*\*\*\s*:?\s*(.+)/i);
+  if (match && match[1]) {
+    return match[1].replace(/[#*`]/g, '').trim();
+  }
+  return "";
+}
+
 interface HistoryItem {
   id: string;
   name: string;
@@ -352,6 +365,48 @@ interface HistoryItem {
   result: string;
   timestamp: string;
 }
+
+type CreativityMode = 'classic' | 'experimental' | 'chaos';
+
+const CREATIVITY_OPTIONS: {
+  id: CreativityMode;
+  label: string;
+  hint: string;
+  icon: typeof Disc;
+  activeClass: string;
+}[] = [
+  {
+    id: 'classic',
+    label: 'Classic',
+    hint: 'Grounded, plausible blends',
+    icon: Disc,
+    activeClass: 'bg-sky-500/20 text-sky-300 border-sky-500/40'
+  },
+  {
+    id: 'experimental',
+    label: 'Experimental',
+    hint: 'Bold risks & twisted expectations',
+    icon: FlaskConical,
+    activeClass: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40'
+  },
+  {
+    id: 'chaos',
+    label: 'Chaos',
+    hint: 'Surreal maximalist collisions',
+    icon: Flame,
+    activeClass: 'bg-pink-500/20 text-pink-300 border-pink-500/40'
+  }
+];
+
+const FUSION_STAGES = [
+  "Splicing rhythmic DNA…",
+  "Cross-breeding harmonic structures…",
+  "Injecting the creative catalyst…",
+  "Calibrating atmospheric pressure…",
+  "Auditioning fictional band members…",
+  "Cutting the debut EP to vinyl…",
+  "Naming the unnameable…"
+];
 
 function App() {
   const [selectedGenres, setSelectedGenres] = useState<Set<string>>(new Set());
@@ -365,6 +420,35 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [draggedGenre, setDraggedGenre] = useState<string | null>(null);
+  const [creativityMode, setCreativityMode] = useState<CreativityMode>('experimental');
+  const [librarySearch, setLibrarySearch] = useState("");
+  const [fusionStageIdx, setFusionStageIdx] = useState(0);
+
+  // Rotate through fun status messages while the fusion is generating
+  useEffect(() => {
+    if (!isGenerating) return;
+    setFusionStageIdx(0);
+    const timer = setInterval(() => {
+      setFusionStageIdx(prev => prev + 1);
+    }, 1800);
+    return () => clearInterval(timer);
+  }, [isGenerating]);
+
+  // Filter the element library by the search query (matches items and group names)
+  const filteredGenres = useMemo(() => {
+    const query = librarySearch.trim().toLowerCase();
+    if (!query) return genres;
+    const filtered: Record<string, string[]> = {};
+    for (const [groupName, items] of Object.entries(genres)) {
+      const matches = groupName.toLowerCase().includes(query)
+        ? items
+        : items.filter(item => item.toLowerCase().includes(query));
+      if (matches.length > 0) {
+        filtered[groupName] = matches;
+      }
+    }
+    return filtered;
+  }, [librarySearch]);
 
   // Load history from localStorage securely
   const [history, setHistory] = useState<HistoryItem[]>(() => {
@@ -713,6 +797,13 @@ function App() {
       selectedList.push(randInstrument);
     }
 
+    // 30% chance: add a time-machine decade twist for extra flavor
+    const decadeGroup = Object.entries(genres).find(([name]) => name.toLowerCase().includes('decade'));
+    if (decadeGroup && decadeGroup[1].length > 0 && Math.random() < 0.3) {
+      const decadeList = decadeGroup[1];
+      selectedList.push(decadeList[Math.floor(Math.random() * decadeList.length)]);
+    }
+
     setSelectedGenres(new Set(selectedList));
   };
 
@@ -788,7 +879,7 @@ function App() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ genres: selectedArray })
+        body: JSON.stringify({ genres: selectedArray, creativity: creativityMode })
       });
 
       if (!response.ok) {
@@ -883,13 +974,25 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 flex flex-col font-sans">
-      <header className="border-b border-indigo-900/40 bg-slate-950/95 backdrop-blur-md relative md:sticky top-0 z-30 flex flex-col shadow-xl">
+    <div className="min-h-screen bg-slate-950 text-slate-200 flex flex-col font-sans relative">
+      {/* Ambient aurora backdrop */}
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
+        <div className="aurora-blob aurora-blob-1" />
+        <div className="aurora-blob aurora-blob-2" />
+        <div className="aurora-blob aurora-blob-3" />
+      </div>
+
+      <header className="border-b border-indigo-900/40 bg-slate-950/90 backdrop-blur-md relative md:sticky top-0 z-30 flex flex-col shadow-xl">
         {/* Title Bar */}
         <div className="px-6 py-3 border-b border-slate-900 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-indigo-400">
-            <Dna className="w-5 h-5" />
-            <h1 className="text-lg font-medium tracking-tight text-slate-100">Genre Fusion Lab</h1>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/25 flex-shrink-0">
+              <Dna className="w-4.5 h-4.5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold tracking-tight font-display gradient-text leading-none">Genre Fusion Lab</h1>
+              <p className="text-[9px] font-mono text-slate-500 uppercase tracking-[0.25em] mt-0.5 hidden sm:block">Sonic DNA Synthesizer</p>
+            </div>
           </div>
           <div className="flex items-center gap-4">
             <button
@@ -1024,10 +1127,41 @@ function App() {
                   )}
                 </div>
 
+                {/* Fusion Intensity selector */}
+                <div className="relative z-10 flex flex-wrap items-center justify-center gap-2 pt-1">
+                  <span className="text-[9px] font-mono text-slate-500 uppercase tracking-wider">Fusion Intensity</span>
+                  <div className="flex bg-slate-950/80 border border-slate-800 rounded-full p-0.5 gap-0.5">
+                    {CREATIVITY_OPTIONS.map(option => {
+                      const OptionIcon = option.icon;
+                      const isActive = creativityMode === option.id;
+                      return (
+                        <button
+                          key={option.id}
+                          type="button"
+                          onClick={() => setCreativityMode(option.id)}
+                          title={option.hint}
+                          className={cn(
+                            "flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold uppercase tracking-wider transition-all cursor-pointer border",
+                            isActive
+                              ? option.activeClass
+                              : "border-transparent text-slate-500 hover:text-slate-300"
+                          )}
+                        >
+                          <OptionIcon className="w-3 h-3" />
+                          <span>{option.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <span className="text-[9px] font-sans text-slate-600 hidden md:inline">
+                    {CREATIVITY_OPTIONS.find(o => o.id === creativityMode)?.hint}
+                  </span>
+                </div>
+
                 <div className="relative z-10 flex items-center justify-between gap-4 pt-1">
                   <div>
                     {selectedArray.length > 0 && (
-                      <button 
+                      <button
                         onClick={handleClearSelection}
                         className="text-[11px] font-mono text-slate-500 hover:text-slate-350 transition-colors uppercase tracking-wider"
                       >
@@ -1049,7 +1183,7 @@ function App() {
                     <button
                       onClick={handleGenerate}
                       disabled={selectedArray.length === 0 || isGenerating}
-                      className="flex items-center gap-1.5 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 disabled:from-slate-850 disabled:to-slate-850 disabled:text-slate-500 text-white px-5 py-1.5 rounded-full text-xs font-semibold shadow-md shadow-indigo-500/5 transition-all transform active:scale-95 duration-100 cursor-pointer disabled:cursor-not-allowed uppercase tracking-wider font-mono"
+                      className="btn-fusion flex items-center gap-1.5 bg-slate-850 disabled:text-slate-500 text-white px-5 py-1.5 rounded-full text-xs font-semibold shadow-md shadow-indigo-500/20 hover:shadow-purple-500/30 transition-all transform active:scale-95 duration-100 cursor-pointer disabled:cursor-not-allowed uppercase tracking-wider font-mono"
                     >
                       {isGenerating ? (
                         <>
@@ -1130,16 +1264,40 @@ function App() {
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col md:flex-row md:overflow-hidden overflow-y-auto">
+      <main className="flex-1 flex flex-col md:flex-row md:overflow-hidden overflow-y-auto relative z-10">
         {/* Left Sidebar: Genre Selection */}
         <aside className="w-full max-h-[40vh] md:max-h-none md:w-80 border-b md:border-b-0 md:border-r border-indigo-900/30 bg-slate-900/20 overflow-hidden flex flex-col flex-shrink-0">
           <div className="p-4 border-b border-indigo-900/30 sticky top-0 bg-slate-950/95 z-20">
             <h2 className="text-sm font-medium text-slate-400 tracking-wider uppercase mb-1">Available Elements</h2>
             <p className="text-xs text-slate-500">Pick sound genres, atmospheres & synths</p>
+            <div className="relative mt-2.5">
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+              <input
+                type="text"
+                value={librarySearch}
+                onChange={(e) => setLibrarySearch(e.target.value)}
+                placeholder="Search 400+ elements..."
+                className="w-full bg-slate-900/80 border border-slate-800 focus:border-indigo-500/50 rounded-lg pl-8 pr-7 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none transition-colors font-sans"
+              />
+              {librarySearch && (
+                <button
+                  onClick={() => setLibrarySearch("")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors cursor-pointer p-0.5"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
           </div>
           <div className="flex-1 overflow-y-auto p-2 space-y-1 max-h-[300px] md:max-h-[calc(100vh-210px)]">
-            {Object.entries(genres).map(([groupName, groupGenres]) => {
-              const isExpanded = expandedGroups.has(groupName);
+            {Object.keys(filteredGenres).length === 0 && (
+              <div className="text-center p-6 text-slate-500 space-y-1">
+                <p className="text-xs">No elements match "{librarySearch}"</p>
+                <p className="text-[10px] text-slate-600">Try a genre, mood, or synth name</p>
+              </div>
+            )}
+            {Object.entries(filteredGenres).map(([groupName, groupGenres]) => {
+              const isExpanded = librarySearch.trim() !== "" || expandedGroups.has(groupName);
               const selectedInGroup = groupGenres.filter(g => selectedGenres.has(g)).length;
               const isMoodGroup = groupName.toLowerCase().includes('mood');
               const isInstrumentGroup = groupName.toLowerCase().includes('instrument');
@@ -1231,7 +1389,7 @@ function App() {
         </aside>
 
         {/* Right Content Area: Fusion Action & Result */}
-        <section className="flex-1 flex flex-col bg-slate-950 overflow-y-auto relative">
+        <section className="flex-1 flex flex-col bg-transparent overflow-y-auto relative">
           {/* Scrolling Results or Chamber instructions */}
           <div className="px-6 py-8 md:py-12 w-full flex-1">
             <div className="max-w-3xl mx-auto w-full">
@@ -1263,6 +1421,43 @@ function App() {
                   </div>
                   <div className="bg-slate-950/90 border border-slate-900/80 p-4 rounded-xl font-mono text-[11px] text-indigo-300/90 select-all whitespace-pre-wrap break-all leading-relaxed max-h-[160px] overflow-y-auto shadow-inner">
                     {selectedArray.join(",\n")}
+                  </div>
+                </div>
+              )}
+
+              {/* Animated fusion-in-progress sequence */}
+              {isGenerating && (
+                <div className="w-full bg-slate-900/40 border border-indigo-500/20 rounded-2xl p-10 flex flex-col items-center gap-6 shadow-xl animate-in fade-in zoom-in-95 duration-300">
+                  <div className="relative w-24 h-24 flex items-center justify-center">
+                    <div className="absolute inset-0 rounded-full border border-indigo-500/30 animate-ping" />
+                    <div className="absolute inset-2 rounded-full border border-purple-500/25 animate-ping" style={{ animationDelay: '300ms' }} />
+                    <div className="absolute inset-4 rounded-full border border-pink-500/20 animate-ping" style={{ animationDelay: '600ms' }} />
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 flex items-center justify-center shadow-lg shadow-purple-500/40">
+                      <FlaskConical className="w-7 h-7 text-white animate-pulse" />
+                    </div>
+                  </div>
+                  <div className="text-center space-y-1.5">
+                    <p
+                      key={fusionStageIdx}
+                      className="text-sm text-indigo-300 font-mono animate-in fade-in slide-in-from-bottom-1 duration-300"
+                    >
+                      {FUSION_STAGES[fusionStageIdx % FUSION_STAGES.length]}
+                    </p>
+                    <p className="text-[10px] text-slate-500 font-mono uppercase tracking-widest">
+                      Fusing {selectedArray.length} element{selectedArray.length === 1 ? '' : 's'} • {creativityMode} mode
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-1.5 max-w-md">
+                    {selectedArray.slice(0, 8).map(genre => (
+                      <span key={genre} className="text-[9px] bg-indigo-950/50 text-indigo-300/80 border border-indigo-500/15 px-2 py-0.5 rounded-full font-mono truncate max-w-[160px] animate-pulse">
+                        {genre}
+                      </span>
+                    ))}
+                    {selectedArray.length > 8 && (
+                      <span className="text-[9px] bg-slate-900/60 text-slate-400 px-2 py-0.5 rounded-full font-mono">
+                        +{selectedArray.length - 8}
+                      </span>
+                    )}
                   </div>
                 </div>
               )}
@@ -1309,6 +1504,7 @@ function App() {
                       const bandName = extractFictionalBand(fusionResult);
                       const bandDesc = extractFictionalBandDesc(fusionResult);
                       const bandPrompt = extractFictionalBandPrompt(fusionResult, bandName, selectedArray);
+                      const catalystText = extractCatalyst(fusionResult);
                       const activeTrack = tracks[activeTrackIndex] || tracks[0];
                       const isPlayingActive = playingTrackId === activeTrack.id;
 
@@ -1357,6 +1553,12 @@ function App() {
                                 <p className="text-xs text-slate-400 font-mono">
                                   by <span className="text-indigo-300 font-sans font-medium">{bandName}</span>
                                 </p>
+                                {catalystText && (
+                                  <p className="text-[10px] text-amber-300/90 font-sans italic flex items-start gap-1 justify-center md:justify-start max-w-xs pt-0.5">
+                                    <Zap className="w-3 h-3 text-amber-400 flex-shrink-0 mt-0.5" />
+                                    <span className="line-clamp-2 text-left">{catalystText}</span>
+                                  </p>
+                                )}
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
@@ -1707,14 +1909,21 @@ function App() {
                 </div>
               ) : (
                 !isGenerating && !error && (
-                  <div className="flex flex-col items-center justify-center py-20 text-center space-y-4 text-slate-500">
-                    <div className="w-12 h-12 rounded-full bg-indigo-950/20 border border-indigo-500/10 flex items-center justify-center text-indigo-400/60 shadow-inner">
-                      <Sparkles className="w-5 h-5" />
+                  <div className="flex flex-col items-center justify-center py-20 text-center space-y-6 text-slate-500 animate-in fade-in duration-500">
+                    <div className="relative w-24 h-24 flex items-center justify-center">
+                      <div className="absolute inset-0 rounded-full border border-dashed border-indigo-500/20 animate-[spin_16s_linear_infinite]" />
+                      <div className="absolute inset-3 rounded-full border border-dashed border-purple-500/20 animate-[spin_11s_linear_infinite_reverse]" />
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-950/70 to-purple-950/40 border border-indigo-500/25 flex items-center justify-center text-indigo-400 shadow-inner shadow-indigo-500/10">
+                        <Dna className="w-6 h-6" />
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <h4 className="text-slate-300 font-medium font-sans text-sm">Chamber of Creation</h4>
+                    <div className="space-y-2">
+                      <h4 className="text-slate-200 font-semibold font-display text-base tracking-tight">Chamber of Creation</h4>
                       <p className="text-xs max-w-sm text-slate-500 leading-relaxed font-sans">
-                        Load musical ingredients and atmospheres into the Fusion Reactor Deck above, and press "Synthesize" to initiate the formula.
+                        Load musical ingredients and atmospheres into the Fusion Reactor Deck above, pick a fusion intensity, and press "Synthesize" to invent a genre no one has ever heard.
+                      </p>
+                      <p className="text-[10px] font-mono text-slate-600 uppercase tracking-widest pt-1">
+                        Every fusion gets a secret creative catalyst
                       </p>
                     </div>
                   </div>
