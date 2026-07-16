@@ -15,6 +15,52 @@ const ai = new GoogleGenAI({
   }
 });
 
+// A pool of narrative "lenses" injected into each fusion so that even identical
+// ingredient combinations produce wildly different genre identities.
+const CREATIVE_CATALYSTS: string[] = [
+  "the genre was born at an illegal rooftop rave in a flooded megacity, 2091",
+  "its pioneers were lighthouse keepers broadcasting to ships through long polar nights",
+  "it emerged from a desert caravan culture that trades in salvaged synthesizers",
+  "the scene formed inside a decommissioned particle accelerator turned nightclub",
+  "its founding artists were botanists who sonified the electrical signals of rainforest plants",
+  "it was invented by miners two kilometers underground, drumming on ventilation pipes",
+  "the genre started as forbidden lullabies sung by androids to their unfinished siblings",
+  "it grew out of a monastery where monks transcribe dreams into modular synth patches",
+  "its first record was cut aboard a generation ship halfway to Proxima Centauri",
+  "the sound was discovered by deep-sea divers repairing transatlantic data cables",
+  "it began as protest music performed on hacked traffic infrastructure",
+  "the scene bloomed in a ghost mall where teenagers rewired abandoned arcade cabinets",
+  "its rhythms mimic the heartbeat patterns of hibernating arctic animals",
+  "it was first performed at a wedding between two rival circus dynasties",
+  "the genre honors a lost radio station that only broadcast during thunderstorms",
+  "its instruments are built from meteorite fragments and antique clockwork",
+  "it emerged from night trains where insomniac commuters jam with pocket synths",
+  "the style was codified by grandmothers who DJ at a floating market before dawn",
+  "it channels the acoustics of glacier caves melting in real time",
+  "its originators were film projectionists scoring silent movies that never existed",
+  "the movement started in a seed vault, sung to keep the archive company",
+  "it descends from carnival musicians who perform only during solar eclipses",
+  "the genre apes the call-and-response of container ships greeting each other in fog",
+  "it was reverse-engineered from a corrupted cassette found in a time capsule",
+];
+
+type CreativityMode = 'classic' | 'experimental' | 'chaos';
+
+const CREATIVITY_MODES: Record<CreativityMode, { temperature: number; directive: string }> = {
+  classic: {
+    temperature: 0.85,
+    directive: "Keep the fusion musically grounded and plausible — something a real crate-digger could believe exists. Weave the Creative Catalyst in as a subtle flavor note in the lore, not the main event."
+  },
+  experimental: {
+    temperature: 1.1,
+    directive: "Take bold creative risks. Subvert at least one expectation of every input element, invent one impossible-yet-evocative production technique, and let the Creative Catalyst visibly shape the genre's identity, fashion, and sound."
+  },
+  chaos: {
+    temperature: 1.3,
+    directive: "Go maximalist and surreal. Let the Creative Catalyst warp everything: collide the inputs violently, invent new instruments and performance rituals, coin words in invented dialects, and describe sounds that shouldn't be physically possible — yet make the reader believe they are real."
+  }
+};
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
@@ -24,18 +70,31 @@ async function startServer() {
   // API Route for GenAI
   app.post('/api/generate-fusion', async (req, res) => {
     try {
-      const { genres } = req.body;
+      const { genres, creativity } = req.body;
       if (!genres || !Array.isArray(genres) || genres.length === 0) {
         return res.status(400).json({ error: 'Please provide an array of genres.' });
       }
 
+      const mode: CreativityMode = (creativity === 'classic' || creativity === 'chaos') ? creativity : 'experimental';
+      const modeConfig = CREATIVITY_MODES[mode];
+      const catalyst = CREATIVE_CATALYSTS[Math.floor(Math.random() * CREATIVE_CATALYSTS.length)];
+
       const prompt = `You are an avant-garde music expert. Your task is to invent a new "genre fusion" based on these input elements (genres, atmospheric moods, and sonic instruments/synthesizers): ${genres.join(", ")}.
+
+CREATIVE CATALYST (a secret origin spark for this fusion): ${catalyst}.
+CREATIVITY DIRECTIVE: ${modeConfig.directive}
+
+NAMING RULES: The genre name must be a striking invented word or an unexpected two-word collision. NEVER simply concatenate the input genre names, and avoid overused prefixes like "Cyber-", "Neo-" or "Synth-" unless truly earned by the concept.
 
 Describe the resulting fusion in Markdown format.
 Include:
-- A catchy, creative name for the new genre (e.g. as a top-level Heading 1 like "# Cyber-Cumbia").
+- A catchy, creative name for the new genre (e.g. as a top-level Heading 1 like "# Cumbia Meridian").
+- Directly below the heading, a single line formatted exactly as: **Creative Catalyst:** [restate the catalyst above in one short evocative sentence]
 - A concise description of how it sounds.
+- A section titled "### Genre DNA" with these bullet points: **Tempo & Pulse:** [BPM range and rhythmic feel], **Harmonic Palette:** [keys, scales or tonal colors], **Production Signatures:** [3 distinctive studio/production techniques that define the genre], **Dynamics:** [how a typical track builds and breathes].
+- A section titled "### Scene & Origin Lore" with one vivid paragraph about where, when, and by whom this genre came alive — its subculture, fashion, and rituals, shaped by the Creative Catalyst.
 - The typical instruments used (ensure any selected instruments/synths from the seeds are featured as central to the sonic signature).
+- A line formatted as: **For Fans Of:** [3-4 real artists or acts that bridge listeners into this fictional genre]
 - **Fictional Band Name:** [Provide band name here]
 - **Band Description:** [Provide a rich description of this band, their members, aesthetic style, and how they play this new genre]
 - **Band Visual & Press Photoshoot Prompt:** [A highly descriptive, artistic, cinematic image prompt representing the band members, their costumes, style, instruments, or general visual performance vibe, suitable for professional press release photos or band posters]
@@ -74,7 +133,9 @@ Keep it imaginative but format it nicely. Use headings, bullet points, and bold 
             model,
             contents: prompt,
             config: {
-              systemInstruction: "You are an imaginative music genre expert.",
+              systemInstruction: "You are an imaginative music genre expert who despises clichés and hunts for the surprising-but-true detail.",
+              temperature: modeConfig.temperature,
+              topP: 0.95,
             }
           });
         } catch (apiError: any) {
