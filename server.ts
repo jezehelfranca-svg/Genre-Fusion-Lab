@@ -115,10 +115,19 @@ In addition, you MUST invent a Fictional EP Tracklist consisting of exactly 3 di
 - **Story & Context:** [Creative context, lyrics description, or narrative story of how the song was conceived]
 - **Visual & Lyrics Prompt:** [A highly descriptive, artistic, poetic image prompt representing the song's lyric/vibe, suitable for generating a stunning album artwork or lyric video background]
 
-At the very end of your response, you MUST include a final section with the exact title:
+Near the end of your response, you MUST include a section with the exact title:
 ### Consolidated Brief Summary
 Followed by a single-paragraph brief description consolidating everything generated, using a comma to separate each dimension and value. For example:
 "Genre: Blues-Wave, Sound: Electro-acoustic slide guitar with synth bass, Central Instruments: Hohner Clavinet and Roland TR-808, Fictional Band: Neon Muddy, Debut Track: Voltage River, Vibe: Swampy atmospheric cyber-blues"
+
+Finally, you MUST end the response with one last section with the exact title:
+### Suno Style Prompt
+Followed by ONE single plain-text paragraph of AT MOST 950 characters (strictly under 1000). This paragraph gets pasted directly into the "Style of Music" field of AI music generators like Suno, so it must obey these rules:
+- Distill the Genre DNA above (tempo/BPM, harmonic palette, production signatures, dynamics) plus the central instruments, mood, and vocal style into flowing comma-separated descriptor phrases.
+- Plain text only: no markdown, no asterisks, no headings, no quotes, no line breaks inside the paragraph.
+- NEVER mention real artist or band names (music generators reject them) — describe the sound itself instead.
+- Every word must earn its place: concrete sonic adjectives and playable directions, not generic hype.
+Example of the expected format: "dark gothic Cuban trova fusion, 96 BPM habanera pulse against rigid drum machine eighths, D minor Phrygian bolero cadences, lush detuned analog chorus synth pads, nylon-string guitar with tape flutter, whispered female close-harmony verses blooming into cathedral-reverb choruses, subterranean 1980s production, melancholic and ritualistic"
 
 Keep it imaginative but format it nicely. Use headings, bullet points, and bold text.`;
 

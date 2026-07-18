@@ -167,7 +167,7 @@ function parseEPTracks(markdown: string | null): ParsedTrack[] {
     const line = lines[i].trim();
     if (!line) continue;
     
-    const trackHeaderMatch = line.match(/^(?:####|###|\*\*|)\s*Track\s*(\d+)\s*:\s*(.+?)(?:\s*\*+|\s*#*|$)/i);
+    const trackHeaderMatch = line.match(/^(?:####|###|\*\*|)\s*Track\s*(\d+)\s*:\s*(.+?)[\s*#]*$/i);
     if (trackHeaderMatch) {
       if (currentTrack && currentTrack.title) {
         tracks.push(currentTrack as ParsedTrack);
@@ -270,12 +270,12 @@ function extractFictionalBand(markdown: string | null): string {
   for (const line of lines) {
     const clean = line.trim();
     const regexList = [
-      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Fictional\s*Band\s*Name\s*\**\s*:\s*\**(.+?)(?:\**|$)/i,
-      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Band\s*Name\s*\**\s*:\s*\**(.+?)(?:\**|$)/i,
-      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Fictional\s*Band\s*\**\s*:\s*\**(.+?)(?:\**|$)/i,
-      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Band\s*\**\s*:\s*\**(.+?)(?:\**|$)/i,
-      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Artist\s*Name\s*\**\s*:\s*\**(.+?)(?:\**|$)/i,
-      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Artist\s*\**\s*:\s*\**(.+?)(?:\**|$)/i
+      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Fictional\s*Band\s*Name\s*\**\s*:\s*\**(.+?)\**\s*$/i,
+      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Band\s*Name\s*\**\s*:\s*\**(.+?)\**\s*$/i,
+      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Fictional\s*Band\s*\**\s*:\s*\**(.+?)\**\s*$/i,
+      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Band\s*\**\s*:\s*\**(.+?)\**\s*$/i,
+      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Artist\s*Name\s*\**\s*:\s*\**(.+?)\**\s*$/i,
+      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Artist\s*\**\s*:\s*\**(.+?)\**\s*$/i
     ];
 
     for (const rx of regexList) {
@@ -300,9 +300,9 @@ function extractFictionalBandDesc(markdown: string | null): string {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     const regexList = [
-      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Band\s*Description\s*\**\s*:\s*\**(.+?)(?:\**|$)/i,
-      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Fictional\s*Band\s*Description\s*\**\s*:\s*\**(.+?)(?:\**|$)/i,
-      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Artist\s*Description\s*\**\s*:\s*\**(.+?)(?:\**|$)/i
+      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Band\s*Description\s*\**\s*:\s*\**(.+?)\**\s*$/i,
+      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Fictional\s*Band\s*Description\s*\**\s*:\s*\**(.+?)\**\s*$/i,
+      /^(?:-\s*|\*\s*|###|##|#|)\s*\**Artist\s*Description\s*\**\s*:\s*\**(.+?)\**\s*$/i
     ];
     for (const rx of regexList) {
       const match = line.match(rx);
@@ -330,10 +330,10 @@ function extractFictionalBandPrompt(markdown: string | null, bandName: string, s
     for (const line of lines) {
       const clean = line.trim();
       const regexList = [
-        /^(?:-\s*|\*\s*|###|##|#|)\s*\**Band\s*Visual\s*&\s*Press\s*Photoshoot\s*Prompt\s*\**\s*:\s*\**(.+?)(?:\**|$)/i,
-        /^(?:-\s*|\*\s*|###|##|#|)\s*\**Band\s*Photoshoot\s*Prompt\s*\**\s*:\s*\**(.+?)(?:\**|$)/i,
-        /^(?:-\s*|\*\s*|###|##|#|)\s*\**Band\s*Visual\s*Prompt\s*\**\s*:\s*\**(.+?)(?:\**|$)/i,
-        /^(?:-\s*|\*\s*|###|##|#|)\s*\**Artist\s*Photoshoot\s*Prompt\s*\**\s*:\s*\**(.+?)(?:\**|$)/i
+        /^(?:-\s*|\*\s*|###|##|#|)\s*\**Band\s*Visual\s*&\s*Press\s*Photoshoot\s*Prompt\s*\**\s*:\s*\**(.+?)\**\s*$/i,
+        /^(?:-\s*|\*\s*|###|##|#|)\s*\**Band\s*Photoshoot\s*Prompt\s*\**\s*:\s*\**(.+?)\**\s*$/i,
+        /^(?:-\s*|\*\s*|###|##|#|)\s*\**Band\s*Visual\s*Prompt\s*\**\s*:\s*\**(.+?)\**\s*$/i,
+        /^(?:-\s*|\*\s*|###|##|#|)\s*\**Artist\s*Photoshoot\s*Prompt\s*\**\s*:\s*\**(.+?)\**\s*$/i
       ];
       for (const rx of regexList) {
         const match = clean.match(rx);
@@ -346,6 +346,57 @@ function extractFictionalBandPrompt(markdown: string | null, bandName: string, s
 
   const genreStr = selectedGenres.length > 0 ? selectedGenres.join(" and ") : "experimental sonic arts";
   return `A raw, high-fashion dramatic front-facing press group photo of the musicians from '${bandName}', posing within an ultra-minimalist raw concrete underground studio. Ambient atmospheric dust and smoky haze backlit by moody pink, violet, and copper lasers. The band members wear avant-garde tailored organic-wire style attire, holding sleek custom synth controllers. Captured on an 85mm medium format camera, crisp cinematic details, dramatic shadow play, exceptional professional layout, 16:9 ratio`;
+}
+
+// Suno's "Style of Music" field accepts at most 1000 characters
+const SUNO_CHAR_LIMIT = 1000;
+
+// Collapse whitespace and hard-cap at the Suno limit, cutting at the last
+// complete comma-separated phrase (or word) so the prompt never ends mid-thought
+function truncateForSuno(text: string): string {
+  const clean = text.replace(/\s+/g, ' ').trim();
+  if (clean.length <= SUNO_CHAR_LIMIT) return clean;
+  const cut = clean.slice(0, SUNO_CHAR_LIMIT);
+  const lastComma = cut.lastIndexOf(',');
+  const lastSpace = cut.lastIndexOf(' ');
+  const boundary = lastComma > SUNO_CHAR_LIMIT - 200 ? lastComma : (lastSpace > 0 ? lastSpace : SUNO_CHAR_LIMIT);
+  return cut.slice(0, boundary).replace(/[,;\s]+$/, '');
+}
+
+// Extract the dedicated "Suno Style Prompt" section generated by the server prompt
+function extractSunoPrompt(markdown: string | null): string {
+  if (!markdown) return "";
+  const markerIndex = markdown.search(/#+\s*Suno\s*Style\s*Prompt/i);
+  if (markerIndex === -1) return "";
+  const lines = markdown.substring(markerIndex).split('\n').slice(1);
+  const content: string[] = [];
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      if (content.length > 0) break;
+      continue;
+    }
+    if (trimmed.startsWith('#')) break;
+    content.push(trimmed.replace(/^["']|["']$/g, ''));
+  }
+  if (content.length === 0) return "";
+  return truncateForSuno(content.join(' ').replace(/[*_`#]/g, ''));
+}
+
+// Build a usable Suno style prompt from the rest of the result if the model
+// skipped the dedicated section (e.g. older history items)
+function buildFallbackSunoPrompt(markdown: string | null, ingredients: string[]): string {
+  const name = markdown ? extractGenreName(markdown, ingredients) : ingredients.slice(0, 3).join(' + ');
+  const brief = extractBriefSummary(markdown);
+  if (brief) {
+    const styleOnly = brief
+      .replace(/(Fictional Band|Debut Track):\s*[^,]+,?\s*/gi, '')
+      .replace(/Genre:\s*/i, '');
+    return truncateForSuno(`${styleOnly}`);
+  }
+  return truncateForSuno(
+    `${name}, a fusion of ${ingredients.join(', ')}, atmospheric cinematic production, rich layered instrumentation, evocative dynamic build`
+  );
 }
 
 // Extract the "Creative Catalyst" origin-spark line injected by the server prompt
@@ -405,6 +456,7 @@ const FUSION_STAGES = [
   "Calibrating atmospheric pressure…",
   "Auditioning fictional band members…",
   "Cutting the debut EP to vinyl…",
+  "Distilling the Suno style prompt…",
   "Naming the unnameable…"
 ];
 
@@ -1464,6 +1516,55 @@ function App() {
 
               {fusionResult ? (
                 <div className="space-y-6">
+                  {/* Suno Style Prompt — the paste-ready deliverable */}
+                  {(() => {
+                    const sunoPrompt = extractSunoPrompt(fusionResult) || buildFallbackSunoPrompt(fusionResult, selectedArray);
+                    if (!sunoPrompt) return null;
+                    return (
+                      <div className="w-full bg-gradient-to-r from-amber-950/25 via-slate-900/45 to-amber-950/25 border border-amber-500/25 rounded-2xl p-5 shadow-lg animate-in slide-in-from-bottom-2 duration-300">
+                        <div className="flex items-center justify-between border-b border-amber-900/25 pb-2 mb-3 gap-3 flex-wrap">
+                          <div className="flex items-center gap-1.5 text-amber-400">
+                            <Volume2 className="w-4 h-4" />
+                            <h4 className="text-slate-200 font-semibold font-mono text-xs uppercase tracking-wider">
+                              Suno Style Prompt
+                            </h4>
+                            <span className={cn(
+                              "text-[9px] font-mono px-1.5 py-0.5 rounded-full border",
+                              sunoPrompt.length > 950
+                                ? "bg-orange-950/50 text-orange-300 border-orange-500/25"
+                                : "bg-amber-950/40 text-amber-300/90 border-amber-500/15"
+                            )}>
+                              {sunoPrompt.length} / {SUNO_CHAR_LIMIT}
+                            </span>
+                          </div>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(sunoPrompt);
+                              setCopiedPromptId("suno-style");
+                              setTimeout(() => setCopiedPromptId(null), 2000);
+                            }}
+                            className="text-[10px] font-mono text-amber-400 hover:text-amber-300 border border-amber-500/25 hover:border-amber-400/50 px-2.5 py-1 rounded-full hover:bg-amber-500/10 transition-all font-semibold cursor-pointer flex items-center gap-1 uppercase tracking-wider"
+                          >
+                            {copiedPromptId === "suno-style" ? (
+                              <span>Copied!</span>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3" />
+                                Copy for Suno
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <div className="bg-slate-950/85 border border-slate-900/80 p-4 rounded-xl font-sans text-xs text-amber-100/90 leading-relaxed select-all shadow-inner">
+                          {sunoPrompt}
+                        </div>
+                        <p className="text-[10px] text-slate-500 font-sans mt-2.5 leading-relaxed">
+                          💡 Paste this directly into Suno's <strong className="text-slate-400">"Style of Music"</strong> field (1000-character limit enforced). It distills the fused Genre DNA — tempo, harmony, instruments, production, and vibe — with no artist names.
+                        </p>
+                      </div>
+                    );
+                  })()}
+
                   {/* Tab Selector bar */}
                   <div className="flex border-b border-indigo-950/40 p-1.5 bg-slate-900/15 rounded-xl justify-between items-center gap-4">
                     <div className="flex gap-1">
