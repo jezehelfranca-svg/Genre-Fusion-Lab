@@ -53,7 +53,8 @@ import {
   logout as googleLogout,
   readHistoryFile,
   saveHistoryToDrive,
-  findHistoryFile
+  findHistoryFile,
+  isDriveSyncConfigured
 } from './googleDrive';
 import type { User } from 'firebase/auth';
 import {
@@ -2254,6 +2255,10 @@ function App() {
                         <span>Merge & Sync</span>
                       </button>
                     </div>
+                  ) : !isDriveSyncConfigured ? (
+                    <p className="text-[10.5px] text-slate-500 leading-relaxed font-sans">
+                      Drive sync is disabled: no Firebase API key configured. Set <code className="text-slate-400 font-mono">VITE_FIREBASE_API_KEY</code> in your environment to enable it. Your history still saves locally in this browser.
+                    </p>
                   ) : (
                     <div className="space-y-2">
                       <p className="text-[10.5px] text-slate-400 leading-relaxed font-sans">
