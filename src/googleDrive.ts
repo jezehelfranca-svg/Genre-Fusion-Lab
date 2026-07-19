@@ -2,9 +2,15 @@ import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, type User } from "firebase/auth";
 import firebaseConfig from "../firebase-applet-config.json";
 
-// Initialize Firebase App
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+// The Firebase API key is intentionally NOT committed to the repo.
+// Provide it via VITE_FIREBASE_API_KEY in .env (see .env.example).
+const apiKey = import.meta.env.VITE_FIREBASE_API_KEY || firebaseConfig.apiKey;
+export const isDriveSyncConfigured = Boolean(apiKey);
+
+// Initialize Firebase only when a key is configured — getAuth throws
+// auth/invalid-api-key at load time otherwise, which would crash the app
+const app = isDriveSyncConfigured ? initializeApp({ ...firebaseConfig, apiKey }) : null;
+export const auth = app ? getAuth(app) : null;
 
 const provider = new GoogleAuthProvider();
 provider.addScope("https://www.googleapis.com/auth/drive.file");
@@ -17,6 +23,10 @@ export const initAuth = (
   onAuthSuccess: (user: User, token: string) => void,
   onAuthFailure: () => void
 ) => {
+  if (!auth) {
+    onAuthFailure();
+    return () => {};
+  }
   return onAuthStateChanged(auth, async (user) => {
     if (user) {
       if (cachedAccessToken) {
@@ -36,6 +46,9 @@ export const initAuth = (
 
 // Start Google sign-in flow
 export const googleSignIn = async (): Promise<{ user: User; accessToken: string } | null> => {
+  if (!auth) {
+    throw new Error("Google Drive sync is not configured: set VITE_FIREBASE_API_KEY in your .env file.");
+  }
   try {
     isSigningIn = true;
     const result = await signInWithPopup(auth, provider);
@@ -60,7 +73,9 @@ export const googleSignIn = async (): Promise<{ user: User; accessToken: string 
 
 // Logout from active account
 export const logout = async () => {
-  await auth.signOut();
+  if (auth) {
+    await auth.signOut();
+  }
   cachedAccessToken = null;
 };
 

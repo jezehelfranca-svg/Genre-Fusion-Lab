@@ -44,20 +44,39 @@ const CREATIVE_CATALYSTS: string[] = [
   "it was reverse-engineered from a corrupted cassette found in a time capsule",
 ];
 
+// Imagery domains injected per generation so track titles draw from a fresh
+// well each run instead of stock "AI song title" vocabulary.
+const TITLE_FLAVORS: string[] = [
+  "obsolete technology and dead media formats",
+  "weather phenomena and atmospheric optics",
+  "cartography, borders, and forgotten place names",
+  "kitchen rituals, recipes, and shared meals",
+  "insect life, migration, and metamorphosis",
+  "maritime signals, tides, and harbor slang",
+  "botany, seeds, grafting, and greenhouse light",
+  "timekeeping: clocks, calendars, and missed appointments",
+  "textiles: weaving, mending, unraveling",
+  "astronomy as seen by amateurs on rooftops",
+  "trains, stations, timetables, and last departures",
+  "letters, postmarks, and messages that arrived too late",
+  "glasswork: blowing, cracking, stained light",
+  "childhood games with invented rules",
+];
+
 type CreativityMode = 'classic' | 'experimental' | 'chaos';
 
 const CREATIVITY_MODES: Record<CreativityMode, { temperature: number; directive: string }> = {
   classic: {
     temperature: 0.85,
-    directive: "Keep the fusion musically grounded and plausible — something a real crate-digger could believe exists. Weave the Creative Catalyst in as a subtle flavor note in the lore, not the main event."
+    directive: "Keep the fusion musically grounded and plausible — something a real crate-digger could believe exists. Weave the Creative Catalyst in as a subtle flavor note in the lore, not the main event. Track titles and stories should feel like liner notes from a real, lovingly documented scene."
   },
   experimental: {
     temperature: 1.1,
-    directive: "Take bold creative risks. Subvert at least one expectation of every input element, invent one impossible-yet-evocative production technique, and let the Creative Catalyst visibly shape the genre's identity, fashion, and sound."
+    directive: "Take bold creative risks. Subvert at least one expectation of every input element, invent one impossible-yet-evocative production technique, and let the Creative Catalyst visibly shape the genre's identity, fashion, and sound. Track titles may bend grammar and stories may take strange turns, as long as they stay emotionally true."
   },
   chaos: {
     temperature: 1.3,
-    directive: "Go maximalist and surreal. Let the Creative Catalyst warp everything: collide the inputs violently, invent new instruments and performance rituals, coin words in invented dialects, and describe sounds that shouldn't be physically possible — yet make the reader believe they are real."
+    directive: "Go maximalist and surreal. Let the Creative Catalyst warp everything: collide the inputs violently, invent new instruments and performance rituals, coin words in invented dialects, and describe sounds that shouldn't be physically possible — yet make the reader believe they are real. Track titles can be fully surreal and stories can read like fever-dream field reports."
   }
 };
 
@@ -78,6 +97,7 @@ async function startServer() {
       const mode: CreativityMode = (creativity === 'classic' || creativity === 'chaos') ? creativity : 'experimental';
       const modeConfig = CREATIVITY_MODES[mode];
       const catalyst = CREATIVE_CATALYSTS[Math.floor(Math.random() * CREATIVE_CATALYSTS.length)];
+      const titleFlavor = TITLE_FLAVORS[Math.floor(Math.random() * TITLE_FLAVORS.length)];
 
       const prompt = `You are an avant-garde music expert. Your task is to invent a new "genre fusion" based on these input elements (genres, atmospheric moods, and sonic instruments/synthesizers): ${genres.join(", ")}.
 
@@ -100,19 +120,33 @@ Include:
 - **Band Visual & Press Photoshoot Prompt:** [A highly descriptive, artistic, cinematic image prompt representing the band members, their costumes, style, instruments, or general visual performance vibe, suitable for professional press release photos or band posters]
 - A descriptive mood or vibe.
 
-In addition, you MUST invent a Fictional EP Tracklist consisting of exactly 3 different iconic tracks of this new genre. Each track MUST follow this strict structural formatting so it can be parsed cleanly:
+In addition, you MUST invent a Fictional EP Tracklist consisting of exactly 3 different iconic tracks of this new genre.
+
+TRACK TITLE RULES (craft each title like a songwriter, not a generator):
+- This EP's title imagery well is: ${titleFlavor}. Let at least two of the three titles drink from it.
+- BANNED title words unless deliberately subverted: Neon, Echo, Echoes, Midnight, Shadow, Shadows, Whisper, Whispers, Dream, Dreams, Void, Eternal, Static, Pulse, Horizon.
+- Each of the 3 titles MUST use a DIFFERENT technique from this list: (a) a concrete image doing an unexpected verb, (b) invented scene slang or a non-English phrase rooted in the fused cultures, (c) the name of a character or place from the EP's story world, (d) a technical or production term used poetically, (e) a fragment of overheard dialogue or a question.
+- All three titles must feel like they belong to the same fictional scene and its Creative Catalyst — a shared world, not three random songs.
+
+STORY RULES (each track's Story & Context):
+- 3 to 5 sentences, written as vivid liner-note storytelling, ALL ON ONE SINGLE LINE (no line breaks inside).
+- Each story MUST contain: a named person or place, one concrete sensory detail, one surprising incident or conflict, and a thread connecting it to the Creative Catalyst.
+- Weave in exactly ONE quoted signature lyric line per story (in "double quotes") that matches the track's vocal style and could be sung as a hook.
+- The three stories MUST form an arc across the EP: Track 1 is the incident or origin, Track 2 is the confession or character piece, Track 3 is the myth or aftermath.
+
+Each track MUST follow this strict structural formatting so it can be parsed cleanly:
 ### Fictional EP Tracklist
 ---
-#### Track 1: [Catchy Track 1 Title]
-- **Story & Context:** [Creative context, lyrics description, or narrative story of how the song was conceived]
+#### Track 1: [Track 1 Title following the TRACK TITLE RULES]
+- **Story & Context:** [The origin/incident story following the STORY RULES, on one line]
 - **Visual & Lyrics Prompt:** [A highly descriptive, artistic, poetic image prompt representing the song's lyric/vibe, suitable for generating a stunning album artwork or lyric video background]
 
-#### Track 2: [Catchy Track 2 Title]
-- **Story & Context:** [Creative context, lyrics description, or narrative story of how the song was conceived]
+#### Track 2: [Track 2 Title following the TRACK TITLE RULES]
+- **Story & Context:** [The confession/character story following the STORY RULES, on one line]
 - **Visual & Lyrics Prompt:** [A highly descriptive, artistic, poetic image prompt representing the song's lyric/vibe, suitable for generating a stunning album artwork or lyric video background]
 
-#### Track 3: [Catchy Track 3 Title]
-- **Story & Context:** [Creative context, lyrics description, or narrative story of how the song was conceived]
+#### Track 3: [Track 3 Title following the TRACK TITLE RULES]
+- **Story & Context:** [The myth/aftermath story following the STORY RULES, on one line]
 - **Visual & Lyrics Prompt:** [A highly descriptive, artistic, poetic image prompt representing the song's lyric/vibe, suitable for generating a stunning album artwork or lyric video background]
 
 Near the end of your response, you MUST include a section with the exact title:
