@@ -82,7 +82,7 @@ const CREATIVITY_MODES: Record<CreativityMode, { temperature: number; directive:
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3000;
 
   app.use(express.json());
 
@@ -109,7 +109,8 @@ NAMING RULES: The genre name must be a striking invented word or an unexpected t
 Describe the resulting fusion in Markdown format.
 Include:
 - A catchy, creative name for the new genre (e.g. as a top-level Heading 1 like "# Cumbia Meridian").
-- Directly below the heading, a single line formatted exactly as: **Creative Catalyst:** [restate the catalyst above in one short evocative sentence]
+- Directly below the heading, a single line formatted exactly as: **Ingredients:** ${genres.join(" + ")}
+- Directly below Ingredients, a single line formatted exactly as: **Creative Catalyst:** [restate the catalyst above in one short evocative sentence]
 - A concise description of how it sounds.
 - A section titled "### Genre DNA" with these bullet points: **Tempo & Pulse:** [BPM range and rhythmic feel], **Harmonic Palette:** [keys, scales or tonal colors], **Production Signatures:** [3 distinctive studio/production techniques that define the genre], **Dynamics:** [how a typical track builds and breathes].
 - A section titled "### Scene & Origin Lore" with one vivid paragraph about where, when, and by whom this genre came alive — its subculture, fashion, and rituals, shaped by the Creative Catalyst.
