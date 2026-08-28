@@ -158,68 +158,69 @@ Followed by a single-paragraph brief description consolidating everything genera
 Finally, you MUST end the response with one last section with the exact title:
 ### Suno Style Prompt
 Followed by ONE single plain-text paragraph of AT MOST 950 characters (strictly under 1000). This paragraph gets pasted directly into the "Style of Music" field of AI music generators like Suno, so it must obey these rules:
-- Distill the Genre DNA above (tempo/BPM, harmonic palette, production signatures, dynamics) plus the central instruments, mood, and vocal style into flowing comma-separated descriptor phrases.
-- Plain text only: no markdown, no asterisks, no headings, no quotes, no line breaks inside the paragraph.
-- NEVER mention real artist or band names (music generators reject them) — describe the sound itself instead.
-- Every word must earn its place: concrete sonic adjectives and playable directions, not generic hype.
-Example of the expected format: "dark gothic Cuban trova fusion, 96 BPM habanera pulse against rigid drum machine eighths, D minor Phrygian bolero cadences, lush detuned analog chorus synth pads, nylon-string guitar with tape flutter, whispered female close-harmony verses blooming into cathedral-reverb choruses, subterranean 1980s production, melancholic and ritualistic"
+- Strictly start with the invented fusion genre name, followed by the parent input ingredients in parentheses separated by " + ", followed by a comma: "[Fusion Genre Name] ([Input Genre 1] + [Input Genre 2] + ...), "
+- Immediately followed by an evocative single-sentence description of the sonic grafting, detailing how the distinctive chords, instruments, production signatures, and rhythmic clash are transplanted or fused together into a vivid sonic collision.
+- Plain text only: single paragraph, no markdown styling, no asterisks, no headings, no quotes wrapping the entire prompt, and no line breaks inside the paragraph.
+- NEVER mention real artist or band names (music generators reject them) — describe the chords, instruments, textures, and rhythms directly instead.
+- Strictly under 1000 characters (aim for concise, punchy impact).
+- Exact format:
+[Fusion Genre Name] ([Ingredient 1] + [Ingredient 2]), [vivid sonic collision sentence describing how the distinctive chords, instruments, and rhythms are transplanted/fused together]
+- Example of the expected format:
+City-Pop-Drill (Japanese City Pop + UK Drill), luxurious 1980s Japanese City Pop electric piano chords and funky horn stabs are jarringly transplanted onto a dark, sliding UK drill 808 rhythm
 
 Keep it imaginative but format it nicely. Use headings, bullet points, and bold text.`;
 
-      // Helper logic for retry & model fallback
-      let response;
-      const primaryModel = 'gemini-3.1-flash-lite';
-      const fallbackModel = 'gemini-3.5-flash';
+      // Robust model fallback chain
+      const modelsToTry = ['gemini-2.5-flash', 'gemini-3.1-flash-lite', 'gemini-3.5-flash', 'gemini-3.6-flash'];
+      let responseText = '';
+      let lastError: any = null;
 
-      async function generateWithRetry(model: string, attempt = 1): Promise<any> {
-        try {
-          return await ai.models.generateContent({
-            model,
-            contents: prompt,
-            config: {
-              systemInstruction: "You are an imaginative music genre expert who despises clichés and hunts for the surprising-but-true detail.",
-              temperature: modeConfig.temperature,
-              topP: 0.95,
+      for (const model of modelsToTry) {
+        let attempt = 1;
+        while (attempt <= 2) {
+          try {
+            console.log(`Attempting generation with model ${model} (attempt ${attempt})...`);
+            const resData = await ai.models.generateContent({
+              model,
+              contents: prompt,
+              config: {
+                systemInstruction: "You are an imaginative music genre expert who despises clichés and hunts for the surprising-but-true detail.",
+                temperature: modeConfig.temperature,
+                topP: 0.95,
+              }
+            });
+            if (resData && resData.text) {
+              responseText = resData.text;
+              break;
             }
-          });
-        } catch (apiError: any) {
-          console.warn(`Attempt ${attempt} for model ${model} failed:`, apiError?.message || apiError);
-          
-          const errorMsg = String(apiError?.message || "");
-          const isCapacityOr503 = errorMsg.includes("503") || errorMsg.includes("UNAVAILABLE") || errorMsg.includes("high demand");
-          const isRateLimit = errorMsg.includes("429") || errorMsg.includes("RESOURCE_EXHAUSTED");
+          } catch (err: any) {
+            lastError = err;
+            const errMsg = String(err?.message || "");
+            const is503OrUnavailable = errMsg.includes("503") || errMsg.includes("UNAVAILABLE") || errMsg.includes("high demand") || errMsg.includes("capacity");
+            console.warn(`Model ${model} attempt ${attempt} failed:`, errMsg);
 
-          if (isRateLimit) {
-            console.log(`Rate limit hit for ${model}, skipping retry and failing immediately...`);
-            throw apiError; 
+            if (is503OrUnavailable && attempt === 1) {
+              attempt++;
+              await new Promise(resolve => setTimeout(resolve, 1500));
+              continue;
+            }
           }
-
-          if (isCapacityOr503 && attempt < 2) {
-            console.log(`Waiting 1200ms before retrying ${model}...`);
-            await new Promise(resolve => setTimeout(resolve, 1200));
-            return generateWithRetry(model, attempt + 1);
-          }
-          throw apiError;
+          break;
+        }
+        if (responseText) {
+          break;
         }
       }
 
-      try {
-        console.log(`Attempting generation with primary model: ${primaryModel}`);
-        response = await generateWithRetry(primaryModel);
-      } catch (primaryError) {
-        console.warn(`Primary model ${primaryModel} failed. Falling back to ${fallbackModel}...`);
-        try {
-          response = await generateWithRetry(fallbackModel);
-        } catch (fallbackError: any) {
-          console.error("Both primary and fallback models failed:", fallbackError);
-          return res.status(503).json({ 
-            error: "Music generation service is heavily loaded right now. Please try in a few seconds.",
-            details: fallbackError?.message || String(fallbackError)
-          });
-        }
+      if (!responseText) {
+        console.error("All model endpoints failed:", lastError);
+        return res.status(503).json({
+          error: "Music generation service is heavily loaded right now. Please try in a few seconds.",
+          details: lastError?.message || String(lastError)
+        });
       }
 
-      res.json({ result: response.text });
+      res.json({ result: responseText });
     } catch (error) {
       console.error("Gemini API Error:", error);
       res.status(500).json({ error: 'Failed to generate fusion.' });
