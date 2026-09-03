@@ -170,8 +170,17 @@ City-Pop-Drill (Japanese City Pop + UK Drill), luxurious 1980s Japanese City Pop
 
 Keep it imaginative but format it nicely. Use headings, bullet points, and bold text.`;
 
-      // Robust model fallback chain
-      const modelsToTry = ['gemini-2.5-flash', 'gemini-3.1-flash-lite', 'gemini-3.5-flash', 'gemini-3.6-flash'];
+      // Robust model fallback chain prioritizing Gemini 3.8
+      const requestedModel = (req.body.model || process.env.GEMINI_MODEL || 'gemini-3.8-flash').trim();
+      const modelsToTry = [
+        requestedModel,
+        'gemini-3.8-flash',
+        'gemini-3.7-flash',
+        'gemini-3.6-flash',
+        'gemini-3.5-flash',
+        'gemini-2.5-flash',
+        'gemini-3.1-flash-lite'
+      ].filter((v, i, a) => a.indexOf(v) === i);
       let responseText = '';
       let lastError: any = null;
 
@@ -281,8 +290,8 @@ Only output items that are actually present in the official lists above inside t
       }
       formattedPrompt += `\nGemma (response to the latest user request):`;
 
-      // Fallback model list to maximize availability & minimize capacity issues
-      const modelsToTry = ["gemini-2.5-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite"];
+      // Fallback model list prioritizing Gemini 3.8 to maximize quality & availability
+      const modelsToTry = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.5-flash", "gemini-2.5-flash", "gemini-3.1-flash-lite"];
       let lastError: any = null;
       let responseText = "";
 
