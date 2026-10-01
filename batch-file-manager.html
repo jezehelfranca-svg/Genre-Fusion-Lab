@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Batch File Manager</title>
+<style>
+  :root{
+    --bg:#0f1420; --panel:#161d2e; --panel2:#1c2438; --border:#2a3652;
+    --text:#e6ebf5; --muted:#8b98b8; --accent:#6c8cff; --accent2:#4c6fff;
+    --good:#3ecf8e; --bad:#ff6b81; --warn:#ffc861;
+    --radius:10px; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--text); display:flex; flex-direction:column; overflow:hidden;
+  }
+  button{font:inherit; cursor:pointer; border:1px solid var(--border); background:var(--panel2);
+    color:var(--text); border-radius:8px; padding:7px 14px; transition:background .15s,border-color .15s;}
+  button:hover{background:#243052; border-color:#3a4a73;}
+  button.primary{background:var(--accent2); border-color:var(--accent2); color:#fff; font-weight:600;}
+  button.primary:hover{background:var(--accent);}
+  button.danger{color:var(--bad);}
+  button.danger:hover{background:#3a2230; border-color:#6b3040;}
+  button:disabled{opacity:.45; cursor:not-allowed;}
+  button.mini{padding:2px 8px; font-size:12px; border-radius:6px;}
+  input[type=text],input[type=number],textarea,select{
+    font:inherit; background:#0c111d; color:var(--text); border:1px solid var(--border);
+    border-radius:8px; padding:7px 10px; outline:none; width:100%;
+  }
+  input:focus,textarea:focus,select:focus{border-color:var(--accent);}
+  textarea{font-family:var(--mono); resize:vertical;}
+  label{user-select:none;}
+  .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+  .grow{flex:1;}
+  .muted{color:var(--muted);}
+  .mono{font-family:var(--mono);}
+  .hidden{display:none !important;}
+
+  /* ---------- Header ---------- */
+  header{
+    display:flex; align-items:center; gap:12px; padding:10px 16px;
+    background:var(--panel); border-bottom:1px solid var(--border); flex-wrap:wrap;
+  }
+  header .logo{font-size:17px; font-weight:700; letter-spacing:.3px; display:flex; align-items:center; gap:8px;}
+  header .logo span{color:var(--accent);}
+  #rootLabel{font-family:var(--mono); color:var(--good); font-size:13px;}
+
+  /* ---------- Layout ---------- */
+  #layout{flex:1; display:flex; min-height:0;}
+  /* Folder tree sidebar (additional option) */
+  #treePanel{
+    width:290px; min-width:200px; background:var(--panel); border-right:1px solid var(--border);
+    display:flex; flex-direction:column; min-height:0;
+  }
+  #treePanel .treeHead{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:9px 12px; border-bottom:1px solid var(--border); font-weight:600; font-size:13px;
+    color:var(--muted); text-transform:uppercase; letter-spacing:.6px;
+  }
+  #tree{flex:1; overflow:auto; padding:8px 6px;}
+  .tnode{list-style:none;}
+  .trow{
+    display:flex; align-items:center; gap:4px; padding:3px 6px; border-radius:6px;
+    white-space:nowrap; cursor:pointer;
+  }
+  .trow:hover{background:var(--panel2);}
+  .trow.current{background:#26355e;}
+  .trow .caret{width:16px; text-align:center; color:var(--muted); flex:none; font-size:11px;}
+  .trow .tname{overflow:hidden; text-overflow:ellipsis;}
+  .trow .tname.file{color:var(--muted);}
+  .trow .tacts{display:none; margin-left:auto; gap:2px;}
+  .trow:hover .tacts{display:flex;}
+  .trow .tacts button{padding:0 5px; font-size:11px; border:none; background:transparent; color:var(--muted);}
+  .trow .tacts button:hover{color:var(--text); background:#33406a;}
+  .tchildren{padding-left:16px;}
+
+  /* ---------- Main ---------- */
+  main{flex:1; display:flex; flex-direction:column; min-width:0; min-height:0;}
+  nav.tabs{display:flex; gap:4px; padding:8px 12px 0; background:var(--panel); border-bottom:1px solid var(--border);}
+  nav.tabs button{
+    border:none; border-radius:8px 8px 0 0; background:transparent; color:var(--muted); padding:8px 16px;
+  }
+  nav.tabs button.active{background:var(--bg); color:var(--text); font-weight:600; box-shadow:inset 0 2px 0 var(--accent);}
+  .panel{flex:1; overflow:auto; padding:16px; display:none; min-height:0;}
+  .panel.active{display:block;}
+  .card{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:14px; margin-bottom:14px;}
+  .card h3{font-size:13px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); margin-bottom:10px;}
+
+  /* Browse */
+  #crumbs{display:flex; gap:4px; align-items:center; flex-wrap:wrap; font-family:var(--mono); font-size:13px;}
+  #crumbs a{color:var(--accent); cursor:pointer; text-decoration:none; padding:2px 4px; border-radius:4px;}
+  #crumbs a:hover{background:var(--panel2);}
+  table.list{width:100%; border-collapse:collapse;}
+  table.list th{
+    text-align:left; font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px;
+    padding:6px 8px; border-bottom:1px solid var(--border);
+  }
+  table.list td{padding:6px 8px; border-bottom:1px solid #1e2740;}
+  table.list tr:hover td{background:var(--panel2);}
+  .ename{cursor:pointer;}
+  .ename:hover{color:var(--accent);}
+  .icon{margin-right:6px;}
+  .rowActs{display:flex; gap:4px; justify-content:flex-end;}
+
+  /* Preview / results tables */
+  .ok{color:var(--good);} .err{color:var(--bad);} .wrn{color:var(--warn);}
+
+  /* chips */
+  #selChips,#selChips2{display:flex; flex-wrap:wrap; gap:6px;}
+  .chip{
+    display:inline-flex; align-items:center; gap:6px; background:var(--panel2); border:1px solid var(--border);
+    border-radius:999px; padding:2px 10px; font-size:12px; font-family:var(--mono);
+  }
+  .chip b{color:var(--bad); cursor:pointer; font-weight:700;}
+
+  /* form grid */
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.grid2{grid-template-columns:1fr;}}
+  .field{margin-bottom:10px;}
+  .field>label{display:block; font-size:12px; color:var(--muted); margin-bottom:4px;}
+
+  /* log */
+  #logWrap{border-top:1px solid var(--border); background:var(--panel);}
+  #logWrap .logHead{display:flex; justify-content:space-between; padding:4px 14px; font-size:12px; color:var(--muted); cursor:pointer;}
+  #log{height:110px; overflow:auto; padding:4px 14px 10px; font-family:var(--mono); font-size:12px;}
+  #log div{padding:1px 0;}
+
+  /* editor modal */
+  #overlay{
+    position:fixed; inset:0; background:rgba(5,8,15,.7); display:none;
+    align-items:center; justify-content:center; z-index:50; padding:24px;
+  }
+  #overlay.open{display:flex;}
+  #editor{
+    background:var(--panel); border:1px solid var(--border); border-radius:12px;
+    width:min(900px,100%); max-height:90vh; display:flex; flex-direction:column; overflow:hidden;
+  }
+  #editor .edHead{display:flex; align-items:center; gap:10px; padding:12px 16px; border-bottom:1px solid var(--border);}
+  #edName{font-family:var(--mono); font-weight:600;}
+  #edBody{padding:14px; overflow:auto; flex:1; display:flex; flex-direction:column;}
+  #edText{width:100%; min-height:320px; flex:1;}
+  #edImg{max-width:100%; max-height:60vh; border-radius:8px; align-self:center;}
+  #editor .edFoot{display:flex; gap:8px; padding:12px 16px; border-top:1px solid var(--border); align-items:center;}
+
+  /* empty state */
+  #welcome{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:14px; text-align:center; padding:30px;
+  }
+  #welcome h1{font-size:26px;}
+  #welcome p{max-width:560px; color:var(--muted);}
+  code.k{background:var(--panel2); border:1px solid var(--border); padding:1px 6px; border-radius:6px; font-family:var(--mono); font-size:12px;}
+  details.help{margin-top:8px;}
+  details.help summary{cursor:pointer; color:var(--accent); font-size:13px;}
+  details.help .body{padding:8px 4px; color:var(--muted); font-size:13px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🗂️ Batch <span>File Manager</span></div>
+  <button id="btnOpen" class="primary">📁 Open Folder</button>
+  <button id="btnSandbox">🧪 Virtual Sandbox</button>
+  <button id="btnTreeToggle" title="Show or hide the folder tree panel">🌲 Tree</button>
+  <span id="rootLabel" class="grow"></span>
+  <span class="muted" id="apiNote"></span>
+</header>
+
+<div id="layout">
+  <!-- ============ Folder Tree (additional option) ============ -->
+  <aside id="treePanel" class="hidden">
+    <div class="treeHead">
+      <span>Folder Tree</span>
+      <button class="mini" id="btnTreeRefresh" title="Refresh tree">⟳</button>
+    </div>
+    <div id="tree"><div class="muted" style="padding:10px">Open a folder to see its tree.</div></div>
+  </aside>
+
+  <main>
+    <div id="welcome">
+      <h1>🗂️ Batch File Manager</h1>
+      <p>Create folders &amp; files in batch, rename in bulk, search, move, copy and edit — all inside a folder you choose.
+         Includes a <b>Folder Tree</b> panel to browse and edit everything in place.</p>
+      <div class="row" style="justify-content:center">
+        <button class="primary" id="btnOpen2">📁 Open a Folder</button>
+        <button id="btnSandbox2">🧪 Try the Virtual Sandbox</button>
+      </div>
+      <p class="muted" style="font-size:12px">
+        “Open Folder” needs Chrome or Edge (File System Access API). Nothing leaves your computer —
+        everything runs locally in your browser. The sandbox is an in-memory playground.
+      </p>
+    </div>
+
+    <nav class="tabs hidden" id="tabs">
+      <button data-tab="browse" class="active">📂 Browse</button>
+      <button data-tab="create">✨ Batch Create</button>
+      <button data-tab="rename">✏️ Batch Rename</button>
+      <button data-tab="search">🔎 Search</button>
+      <button data-tab="movecopy">📦 Move / Copy</button>
+    </nav>
+
+    <!-- ============ BROWSE ============ -->
+    <section class="panel" id="tab-browse">
+      <div class="card">
+        <div class="row" style="margin-bottom:10px">
+          <div id="crumbs" class="grow"></div>
+          <button class="mini" id="btnUp">⬆ Up</button>
+          <button class="mini" id="btnRefresh">⟳ Refresh</button>
+        </div>
+        <div class="row" style="margin-bottom:10px">
+          <button class="mini" id="btnNewFile">＋ New File</button>
+          <button class="mini" id="btnNewFolder">＋ New Folder</button>
+          <span class="grow"></span>
+          <span class="muted" id="selCount"></span>
+          <button class="mini" id="btnSelAll">Select all</button>
+          <button class="mini" id="btnSelNone">Clear</button>
+          <button class="mini danger" id="btnDelSel">🗑 Delete selected</button>
+        </div>
+        <table class="list">
+          <thead><tr><th style="width:28px"></th><th>Name</th><th style="width:110px">Size</th><th style="width:170px"></th></tr></thead>
+          <tbody id="fileRows"></tbody>
+        </table>
+        <div class="muted" id="emptyNote" style="padding:14px 4px; display:none">This folder is empty.</div>
+      </div>
+    </section>
+
+    <!-- ============ BATCH CREATE ============ -->
+    <section class="panel" id="tab-create">
+      <div class="card">
+        <h3>Batch create files &amp; folders <span class="muted" style="text-transform:none">— created inside the current Browse folder</span></h3>
+        <div class="grid2">
+          <div>
+            <div class="field">
+              <label>Names / patterns — one per line. End a line with <code class="k">/</code> for a folder. Use <code class="k">sub/dir/name.txt</code> for nesting.</label>
+              <textarea id="crList" rows="8" placeholder="report_{1-5}.md
+photos/
+notes/idea_{a-c}.txt
+assets/{img,css,js}/"></textarea>
+            </div>
+            <details class="help">
+              <summary>Pattern help</summary>
+              <div class="body">
+                <code class="k">{1-10}</code> numeric range · <code class="k">{01-10}</code> zero-padded ·
+                <code class="k">{a-e}</code> letter range · <code class="k">{red,green,blue}</code> list ·
+                ranges can be combined, e.g. <code class="k">s{1-3}/take_{01-04}.wav</code> (max 2000 items per run)
+              </div>
+            </details>
+          </div>
+          <div>
+            <div class="field">
+              <label>Type</label>
+              <select id="crType">
+                <option value="auto">Auto (trailing “/” = folder, otherwise file)</option>
+                <option value="file">Force: files</option>
+                <option value="folder">Force: folders</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Initial content for created files (optional). Placeholders: <code class="k">{{name}}</code> <code class="k">{{i}}</code> <code class="k">{{date}}</code></label>
+              <textarea id="crContent" rows="4" placeholder="# {{name}} — created {{date}}"></textarea>
+            </div>
+            <div class="row">
+              <label><input type="checkbox" id="crSkipExisting" checked> Skip if it already exists</label>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button id="btnCrPreview">👁 Preview</button>
+          <button class="primary" id="btnCrCreate">✨ Create</button>
+          <span class="muted" id="crInfo"></span>
+        </div>
+        <div id="crPreview" style="margin-top:10px"></div>
+      </div>
+    </section>
+
+    <!-- ============ BATCH RENAME ============ -->
+    <section class="panel" id="tab-rename">
+      <div class="card">
+        <h3>Selected items <span class="muted" style="text-transform:none">— tick items in Browse, the tree, or Search results</span></h3>
+        <div id="selChips"><span class="muted">Nothing selected yet.</span></div>
+        <div class="row" style="margin-top:8px">
+          <button class="mini" id="btnRnUseFolder">Use all items in current folder</button>
+          <button class="mini" id="btnRnClear">Clear selection</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Rename rules (applied top to bottom)</h3>
+        <div class="grid2">
+          <div>
+            <div class="row field">
+              <label style="width:130px"><input type="checkbox" id="rnFindOn"> Find &amp; replace</label>
+              <input type="text" id="rnFind" placeholder="find…" style="flex:1">
+              <span>→</span>
+              <input type="text" id="rnRepl" placeholder="replace with…" style="flex:1">
+            </div>
+            <div class="row field" style="padding-left:130px">
+              <label><input type="checkbox" id="rnRegex"> Regex</label>
+              <label><input type="checkbox" id="rnCaseIns" checked> Ignore case</label>
+            </div>
+            <div class="row field">
+              <label style="width:130px"><input type="checkbox" id="rnAffixOn"> Prefix / suffix</label>
+              <input type="text" id="rnPrefix" placeholder="prefix" style="flex:1">
+              <input type="text" id="rnSuffix" placeholder="suffix (before extension)" style="flex:1">
+            </div>
+          </div>
+          <div>
+            <div class="row field">
+              <label style="width:130px"><input type="checkbox" id="rnNumOn"> Numbering</label>
+              <select id="rnNumPos" style="width:110px"><option value="suffix">as suffix</option><option value="prefix">as prefix</option></select>
+              <label class="muted">start</label><input type="number" id="rnNumStart" value="1" style="width:70px">
+              <label class="muted">pad</label><input type="number" id="rnNumPad" value="2" min="1" max="8" style="width:60px">
+            </div>
+            <div class="row field">
+              <label style="width:130px"><input type="checkbox" id="rnCaseOn"> Change case</label>
+              <select id="rnCase" style="flex:1">
+                <option value="lower">lowercase</option><option value="upper">UPPERCASE</option><option value="title">Title Case</option>
+              </select>
+            </div>
+            <div class="row field">
+              <label style="width:130px"><input type="checkbox" id="rnExtOn"> New extension</label>
+              <input type="text" id="rnExt" placeholder="e.g. md — empty removes the extension" style="flex:1">
+            </div>
+          </div>
+        </div>
+        <div class="row" style="margin-top:6px">
+          <button id="btnRnPreview">👁 Preview</button>
+          <button class="primary" id="btnRnApply">✏️ Apply rename</button>
+          <span class="muted" id="rnInfo"></span>
+        </div>
+        <div id="rnPreview" style="margin-top:10px"></div>
+      </div>
+    </section>
+
+    <!-- ============ SEARCH ============ -->
+    <section class="panel" id="tab-search">
+      <div class="card">
+        <h3>Search</h3>
+        <div class="row field">
+          <input type="text" id="sQuery" placeholder="name to find — wildcards * and ? allowed, e.g. *.png or report_?.md" style="flex:2" >
+          <select id="sType" style="width:130px">
+            <option value="all">All types</option><option value="file">Files only</option><option value="directory">Folders only</option>
+          </select>
+          <select id="sScope" style="width:170px">
+            <option value="root">Whole opened folder</option><option value="cwd">Current folder</option>
+          </select>
+          <button class="primary" id="btnSearch">🔎 Search</button>
+        </div>
+        <div class="row field">
+          <label><input type="checkbox" id="sRecursive" checked> Include subfolders</label>
+          <label><input type="checkbox" id="sContent"> Also search inside file contents (text files ≤ 1 MB)</label>
+        </div>
+        <div class="muted" id="sInfo"></div>
+        <div id="sResults" style="margin-top:8px"></div>
+      </div>
+    </section>
+
+    <!-- ============ MOVE / COPY ============ -->
+    <section class="panel" id="tab-movecopy">
+      <div class="card">
+        <h3>Items to move / copy <span class="muted" style="text-transform:none">— tick items in Browse, the tree, or Search results</span></h3>
+        <div id="selChips2"><span class="muted">Nothing selected yet.</span></div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h3>Destination folder</h3>
+          <div id="destTree" style="max-height:280px; overflow:auto"></div>
+          <div class="row" style="margin-top:8px">
+            <label class="muted">Optional new subfolder:</label>
+            <input type="text" id="mcNewSub" placeholder="e.g. archive/2026" style="flex:1">
+          </div>
+          <div class="muted" style="margin-top:6px">Destination: <span id="destLabel" class="mono ok">/</span></div>
+        </div>
+        <div class="card">
+          <h3>Options</h3>
+          <div class="field">
+            <label>If the name already exists in the destination</label>
+            <select id="mcConflict">
+              <option value="rename">Keep both — auto-rename “name (2)”</option>
+              <option value="skip">Skip that item</option>
+              <option value="overwrite">Overwrite</option>
+            </select>
+          </div>
+          <div class="row" style="margin-top:14px">
+            <button class="primary" id="btnCopy">📄 Copy here</button>
+            <button class="primary" id="btnMove">📦 Move here</button>
+          </div>
+          <div class="muted" id="mcInfo" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="logWrap" class="hidden">
+  <div class="logHead" id="logHead"><span>Activity log</span><span id="logToggle">▾ hide</span></div>
+  <div id="log"></div>
+</div>
+
+<!-- ============ EDITOR MODAL ============ -->
+<div id="overlay">
+  <div id="editor">
+    <div class="edHead">
+      <span style="font-size:18px">📝</span>
+      <span id="edName" class="grow"></span>
+      <span class="muted" id="edMeta"></span>
+      <button class="mini" id="btnEdClose">✕</button>
+    </div>
+    <div id="edBody">
+      <textarea id="edText" spellcheck="false"></textarea>
+      <img id="edImg" class="hidden" alt="preview">
+      <div id="edBinary" class="muted hidden" style="padding:20px; text-align:center">
+        ⚠️ This looks like a binary file — editing is disabled.
+      </div>
+    </div>
+    <div class="edFoot">
+      <button class="primary" id="btnEdSave">💾 Save</button>
+      <input type="text" id="edSaveAs" placeholder="save a copy as… (filename)" style="width:260px">
+      <button id="btnEdSaveAs">Save copy</button>
+      <span class="grow"></span>
+      <span class="muted" id="edStatus"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* =====================================================================
+   Batch File Manager — single-file app.
+   Real folders via the File System Access API (Chrome/Edge), or an
+   in-memory Virtual Sandbox that implements the same handle interface.
+   ===================================================================== */
+
+/* ---------------- tiny DOM helpers ---------------- */
+const $ = s => document.querySelector(s);
+function h(tag, attrs, ...kids){
+  const el = document.createElement(tag);
+  if (attrs) for (const [k,v] of Object.entries(attrs)){
+    if (k === 'class') el.className = v;
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else if (k === 'dataset') Object.assign(el.dataset, v);
+    else el.setAttribute(k, v);
+  }
+  for (const k of kids.flat()){
+    if (k == null) continue;
+    el.append(k.nodeType ? k : document.createTextNode(k));
+  }
+  return el;
+}
+
+/* ---------------- state ---------------- */
+const S = {
+  root: null,          // root directory handle
+  rootName: '',
+  virtual: false,
+  cwd: [],             // path from root as array of names
+  expanded: new Set(['/']),
+  selection: new Map(),// pathStr -> {path:[…], name, kind}
+  destPath: [],        // move/copy destination
+  edit: null,          // {path:[…names incl. file], name}
+  treeVisible: true,
+};
+const pstr = arr => '/' + arr.join('/');
+
+/* ---------------- virtual sandbox FS ---------------- */
+class VFile {
+  constructor(name, data=''){ this.kind='file'; this.name=name; this._data=data; this.lastModified=Date.now(); }
+  async getFile(){ return new File([this._data], this.name, {lastModified:this.lastModified}); }
+  async createWritable(){
+    const chunks=[], self=this;
+    return {
+      async write(d){ chunks.push(d); },
+      async close(){
+        const parts=[];
+        for (const c of chunks){
+          if (typeof c === 'string') parts.push(c);
+          else if (c instanceof Blob) parts.push(await c.text());
+          else parts.push(new TextDecoder().decode(c));
+        }
+        self._data = parts.join(''); self.lastModified = Date.now();
+      }
+    };
+  }
+}
+class VDir {
+  constructor(name){ this.kind='directory'; this.name=name; this.children=new Map(); }
+  async *values(){ for (const v of this.children.values()) yield v; }
+  async getFileHandle(name,{create=false}={}){
+    let c=this.children.get(name);
+    if (c && c.kind==='file') return c;
+    if (c) throw new DOMException('TypeMismatchError','TypeMismatchError');
+    if (!create) throw new DOMException('NotFoundError','NotFoundError');
+    c=new VFile(name); this.children.set(name,c); return c;
+  }
+  async getDirectoryHandle(name,{create=false}={}){
+    let c=this.children.get(name);
+    if (c && c.kind==='directory') return c;
+    if (c) throw new DOMException('TypeMismatchError','TypeMismatchError');
+    if (!create) throw new DOMException('NotFoundError','NotFoundError');
+    c=new VDir(name); this.children.set(name,c); return c;
+  }
+  async removeEntry(name,{recursive=false}={}){
+    const c=this.children.get(name);
+    if (!c) throw new DOMException('NotFoundError','NotFoundError');
+    if (c.kind==='directory' && c.children.size && !recursive)
+      throw new DOMException('InvalidModificationError','InvalidModificationError');
+    this.children.delete(name);
+  }
+}
+async function writeText(fileHandle, text){
+  const w = await fileHandle.createWritable(); await w.write(text); await w.close();
+}
+async function makeSandbox(){
+  const root = new VDir('sandbox');
+  const docs = await root.getDirectoryHandle('documents',{create:true});
+  await writeText(await docs.getFileHandle('readme.md',{create:true}), '# Sandbox\nA safe in-memory playground.\nTry the Batch tools!\n');
+  await writeText(await docs.getFileHandle('todo.txt',{create:true}), '- rename these files\n- try the folder tree\n');
+  const music = await root.getDirectoryHandle('music',{create:true});
+  await writeText(await music.getFileHandle('track_01.txt',{create:true}), 'lyrics for track 01');
+  await writeText(await music.getFileHandle('track_02.txt',{create:true}), 'lyrics for track 02');
+  await root.getDirectoryHandle('empty-folder',{create:true});
+  await writeText(await root.getFileHandle('notes.txt',{create:true}), 'Root-level notes file.');
+  return root;
+}
+
+/* ---------------- FS helpers (work for real + virtual) ---------------- */
+async function resolveDir(pathArr){
+  let d = S.root;
+  for (const name of pathArr) d = await d.getDirectoryHandle(name);
+  return d;
+}
+async function listDir(dirHandle){
+  const out = [];
+  for await (const e of dirHandle.values()) out.push(e);
+  out.sort((a,b)=>{
+    if (a.kind !== b.kind) return a.kind === 'directory' ? -1 : 1;
+    return a.name.localeCompare(b.name, undefined, {numeric:true, sensitivity:'base'});
+  });
+  return out;
+}
+async function entryExists(dir, name){
+  try { await dir.getFileHandle(name); return 'file'; } catch(e){}
+  try { await dir.getDirectoryHandle(name); return 'directory'; } catch(e){}
+  return null;
+}
+async function uniqueName(dir, name){
+  if (!await entryExists(dir, name)) return name;
+  const dot = name.lastIndexOf('.');
+  const stem = (dot > 0) ? name.slice(0, dot) : name;
+  const ext  = (dot > 0) ? name.slice(dot) : '';
+  for (let i=2; i<1000; i++){
+    const cand = `${stem} (${i})${ext}`;
+    if (!await entryExists(dir, cand)) return cand;
+  }
+  throw new Error('could not find a unique name for ' + name);
+}
+async function ensureDirPath(baseDir, parts){
+  let d = baseDir;
+  for (const p of parts) d = await d.getDirectoryHandle(p, {create:true});
+  return d;
+}
+async function copyEntry(src, destDir, name){
+  if (src.kind === 'file'){
+    const file = await src.getFile();
+    const fh = await destDir.getFileHandle(name, {create:true});
+    const w = await fh.createWritable();
+    await w.write(file); await w.close();
+  } else {
+    const nd = await destDir.getDirectoryHandle(name, {create:true});
+    for await (const child of src.values()) await copyEntry(child, nd, child.name);
+  }
+}
+async function getEntry(parentDir, name, kind){
+  return kind === 'file' ? parentDir.getFileHandle(name) : parentDir.getDirectoryHandle(name);
+}
+async function renameEntry(parentDir, name, kind, newName){
+  if (name === newName) return;
+  const src = await getEntry(parentDir, name, kind);
+  if (kind === 'file' && typeof src.move === 'function'){
+    try { await src.move(newName); return; } catch(e){ /* fall through */ }
+  }
+  await copyEntry(src, parentDir, newName);
+  await parentDir.removeEntry(name, {recursive:true});
+}
+async function moveEntry(srcParent, name, kind, destDir, targetName){
+  const src = await getEntry(srcParent, name, kind);
+  if (kind === 'file' && typeof src.move === 'function'){
+    try { await src.move(destDir, targetName); return; } catch(e){ /* fall through */ }
+  }
+  await copyEntry(src, destDir, targetName);
+  await srcParent.removeEntry(name, {recursive:true});
+}
+async function walk(dirHandle, pathArr, cb){
+  for await (const e of dirHandle.values()){
+    const p = [...pathArr, e.name];
+    await cb(e, p);
+    if (e.kind === 'directory') await walk(e, p, cb);
+  }
+}
+function fmtSize(n){
+  if (n == null) return '';
+  if (n < 1024) return n + ' B';
+  if (n < 1048576) return (n/1024).toFixed(1) + ' KB';
+  return (n/1048576).toFixed(1) + ' MB';
+}
+
+/* ---------------- log ---------------- */
+function log(msg, cls){
+  const line = h('div', cls ? {class:cls} : null,
+    `[${new Date().toLocaleTimeString()}] ${msg}`);
+  const box = $('#log');
+  box.prepend(line);
+  while (box.children.length > 400) box.lastChild.remove();
+}
+
+/* ---------------- open folder / sandbox ---------------- */
+async function openRealFolder(){
+  if (!window.showDirectoryPicker){
+    alert('Your browser does not support the File System Access API.\nUse Chrome or Edge — or try the Virtual Sandbox.');
+    return;
+  }
+  try {
+    const dir = await window.showDirectoryPicker({mode:'readwrite'});
+    if (dir.requestPermission){
+      const p = await dir.requestPermission({mode:'readwrite'});
+      if (p !== 'granted'){ log('Write permission denied.', 'err'); return; }
+    }
+    S.root = dir; S.rootName = dir.name; S.virtual = false;
+    await afterOpen();
+  } catch(e){
+    if (e.name !== 'AbortError') log('Open folder failed: ' + e.message, 'err');
+  }
+}
+async function openSandbox(){
+  S.root = await makeSandbox();
+  S.rootName = 'sandbox'; S.virtual = true;
+  await afterOpen();
+}
+async function afterOpen(){
+  S.cwd = []; S.selection.clear(); S.destPath = [];
+  S.expanded = new Set(['/']);
+  $('#welcome').classList.add('hidden');
+  $('#tabs').classList.remove('hidden');
+  $('#logWrap').classList.remove('hidden');
+  $('#rootLabel').textContent = '📂 ' + S.rootName + (S.virtual ? '  (virtual sandbox — in-memory only)' : '');
+  setTreeVisible(true);
+  log(`Opened ${S.virtual ? 'virtual sandbox' : 'folder'} “${S.rootName}”.`, 'ok');
+  await refreshAll();
+}
+
+/* ---------------- tabs ---------------- */
+function showTab(name){
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id==='tab-'+name));
+  if (name==='rename') renderChips();
+  if (name==='movecopy'){ renderChips(); renderDestTree(); }
+}
+document.querySelectorAll('nav.tabs button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+
+/* ---------------- refresh ---------------- */
+async function refreshAll(){
+  await renderBrowse();
+  await renderTree();
+  renderChips();
+}
+
+/* ---------------- Browse panel ---------------- */
+function renderCrumbs(){
+  const c = $('#crumbs'); c.innerHTML='';
+  c.append(h('a',{onclick:()=>navigate([])}, '📂 ' + S.rootName));
+  S.cwd.forEach((name,i)=>{
+    c.append(h('span',{class:'muted'},'/'));
+    c.append(h('a',{onclick:()=>navigate(S.cwd.slice(0,i+1))}, name));
+  });
+}
+async function navigate(pathArr){
+  S.cwd = pathArr;
+  // auto-expand the tree down to the current folder
+  for (let i=0;i<=pathArr.length;i++) S.expanded.add(pstr(pathArr.slice(0,i)));
+  await renderBrowse(); await renderTree();
+}
+async function renderBrowse(){
+  renderCrumbs();
+  const tbody = $('#fileRows'); tbody.innerHTML='';
+  let entries = [];
+  try { entries = await listDir(await resolveDir(S.cwd)); }
+  catch(e){ S.cwd = []; entries = await listDir(S.root); renderCrumbs(); }
+  $('#emptyNote').style.display = entries.length ? 'none' : 'block';
+  for (const e of entries){
+    const p = [...S.cwd, e.name], ps = pstr(p);
+    const cb = h('input',{type:'checkbox'});
+    cb.checked = S.selection.has(ps);
+    cb.addEventListener('change',()=>{ toggleSelect(p, e.name, e.kind, cb.checked); });
+    const nameCell = h('span',{class:'ename', onclick:()=> e.kind==='directory' ? navigate(p) : openEditor(p)},
+      h('span',{class:'icon'}, e.kind==='directory'?'📁':'📄'), e.name);
+    const sizeCell = h('td',{class:'muted mono'},'');
+    if (e.kind==='file') e.getFile().then(f=>sizeCell.textContent = fmtSize(f.size)).catch(()=>{});
+    const acts = h('div',{class:'rowActs'},
+      e.kind==='file' ? h('button',{class:'mini', onclick:()=>openEditor(p)},'✏️ Edit') : null,
+      h('button',{class:'mini', onclick:()=>quickRename(p, e.name, e.kind)},'Rename'),
+      h('button',{class:'mini danger', onclick:()=>deleteOne(p, e.name, e.kind)},'🗑'),
+    );
+    tbody.append(h('tr',null, h('td',null,cb), h('td',null,nameCell), sizeCell, h('td',null,acts)));
+  }
+  updateSelCount();
+}
+function toggleSelect(pathArr, name, kind, on){
+  const ps = pstr(pathArr);
+  if (on) S.selection.set(ps, {path:pathArr, name, kind});
+  else S.selection.delete(ps);
+  updateSelCount(); renderChips();
+}
+function updateSelCount(){
+  $('#selCount').textContent = S.selection.size ? S.selection.size + ' selected' : '';
+}
+async function quickRename(pathArr, name, kind){
+  const nn = prompt(`Rename “${name}” to:`, name);
+  if (!nn || nn === name) return;
+  if (/[\\/]/.test(nn)) { alert('Name cannot contain / or \\'); return; }
+  try {
+    const parent = await resolveDir(pathArr.slice(0,-1));
+    if (await entryExists(parent, nn)) { alert(`“${nn}” already exists here.`); return; }
+    await renameEntry(parent, name, kind, nn);
+    S.selection.delete(pstr(pathArr));
+    log(`Renamed ${name} → ${nn}`, 'ok');
+    await refreshAll();
+  } catch(e){ log('Rename failed: '+e.message,'err'); }
+}
+async function deleteOne(pathArr, name, kind){
+  if (!confirm(`Delete ${kind==='directory'?'folder':'file'} “${name}”${kind==='directory'?' and everything inside it':''}?`)) return;
+  try {
+    const parent = await resolveDir(pathArr.slice(0,-1));
+    await parent.removeEntry(name,{recursive:true});
+    S.selection.delete(pstr(pathArr));
+    log(`Deleted ${name}`, 'ok');
+    await refreshAll();
+  } catch(e){ log('Delete failed: '+e.message,'err'); }
+}
+$('#btnUp').addEventListener('click',()=>{ if (S.cwd.length) navigate(S.cwd.slice(0,-1)); });
+$('#btnRefresh').addEventListener('click',refreshAll);
+$('#btnNewFile').addEventListener('click',async()=>{
+  const n = prompt('New file name:','untitled.txt'); if(!n) return;
+  try{
+    const d = await resolveDir(S.cwd);
+    if (await entryExists(d,n)){ alert('Already exists.'); return; }
+    await d.getFileHandle(n,{create:true});
+    log('Created file '+n,'ok'); await refreshAll();
+  }catch(e){ log('Create failed: '+e.message,'err'); }
+});
+$('#btnNewFolder').addEventListener('click',async()=>{
+  const n = prompt('New folder name:','new-folder'); if(!n) return;
+  try{
+    const d = await resolveDir(S.cwd);
+    if (await entryExists(d,n)){ alert('Already exists.'); return; }
+    await d.getDirectoryHandle(n,{create:true});
+    log('Created folder '+n,'ok'); await refreshAll();
+  }catch(e){ log('Create failed: '+e.message,'err'); }
+});
+$('#btnSelAll').addEventListener('click',async()=>{
+  const entries = await listDir(await resolveDir(S.cwd));
+  for (const e of entries) toggleSelect([...S.cwd,e.name], e.name, e.kind, true);
+  renderBrowse();
+});
+$('#btnSelNone').addEventListener('click',()=>{ S.selection.clear(); renderBrowse(); renderChips(); });
+$('#btnDelSel').addEventListener('click',async()=>{
+  if (!S.selection.size) return;
+  if (!confirm(`Delete ${S.selection.size} selected item(s)? Folders are deleted with their contents.`)) return;
+  let ok=0;
+  for (const item of [...S.selection.values()]){
+    try{
+      const parent = await resolveDir(item.path.slice(0,-1));
+      await parent.removeEntry(item.name,{recursive:true});
+      S.selection.delete(pstr(item.path)); ok++;
+    }catch(e){ log(`Delete ${item.name} failed: ${e.message}`,'err'); }
+  }
+  log(`Deleted ${ok} item(s).`,'ok');
+  await refreshAll();
+});
+
+/* ---------------- Folder tree (additional option) ---------------- */
+function setTreeVisible(v){
+  S.treeVisible = v;
+  $('#treePanel').classList.toggle('hidden', !v || !S.root);
+}
+$('#btnTreeToggle').addEventListener('click',()=>setTreeVisible(!S.treeVisible));
+$('#btnTreeRefresh').addEventListener('click',renderTree);
+
+async function renderTree(){
+  if (!S.root) return;
+  const box = $('#tree'); box.innerHTML='';
+  box.append(await treeNode([], S.rootName, 'directory'));
+}
+async function treeNode(pathArr, label, kind){
+  const ps = pstr(pathArr);
+  const li = h('div',{class:'tnode'});
+  const isDir = kind === 'directory';
+  const isOpen = isDir && S.expanded.has(ps);
+  const caret = h('span',{class:'caret'}, isDir ? (isOpen?'▾':'▸') : '');
+  const row = h('div',{class:'trow' + (isDir && ps===pstr(S.cwd) ? ' current':'')},
+    caret,
+    h('span',{class:'icon'}, isDir?'📁':'📄'),
+    h('span',{class:'tname'+(isDir?'':' file')}, label),
+  );
+  // hover actions: view/edit files, manage folders — right from the tree
+  const acts = h('span',{class:'tacts'});
+  if (isDir){
+    acts.append(
+      h('button',{title:'New file here', onclick:ev=>{ev.stopPropagation(); treeNewFile(pathArr);}},'＋📄'),
+      h('button',{title:'New folder here', onclick:ev=>{ev.stopPropagation(); treeNewFolder(pathArr);}},'＋📁'),
+    );
+  } else {
+    acts.append(h('button',{title:'Edit', onclick:ev=>{ev.stopPropagation(); openEditor(pathArr);}},'✏️'));
+  }
+  if (pathArr.length){
+    acts.append(
+      h('button',{title:'Rename', onclick:ev=>{ev.stopPropagation(); quickRename(pathArr, label, kind);}},'✎'),
+      h('button',{title:'Delete', onclick:ev=>{ev.stopPropagation(); deleteOne(pathArr, label, kind);}},'🗑'),
+    );
+  }
+  row.append(acts);
+  row.addEventListener('click', async ()=>{
+    if (isDir){
+      // clicking a folder both toggles it and opens it in Browse
+      if (S.expanded.has(ps)) S.expanded.delete(ps); else S.expanded.add(ps);
+      await navigate(pathArr);
+      showTab(document.querySelector('nav.tabs button.active')?.dataset.tab || 'browse');
+    } else {
+      openEditor(pathArr);
+    }
+  });
+  li.append(row);
+  if (isOpen){
+    const kidsBox = h('div',{class:'tchildren'});
+    try{
+      const dir = await resolveDir(pathArr);
+      for (const e of await listDir(dir)){
+        kidsBox.append(await treeNode([...pathArr, e.name], e.name, e.kind));
+      }
+      if (!kidsBox.children.length) kidsBox.append(h('div',{class:'muted', style:'padding:2px 8px; font-size:12px'},'(empty)'));
+    }catch(e){ kidsBox.append(h('div',{class:'err', style:'padding:2px 8px'},'⚠ '+e.message)); }
+    li.append(kidsBox);
+  }
+  return li;
+}
+async function treeNewFile(pathArr){
+  const n = prompt('New file name:','untitled.txt'); if(!n) return;
+  try{
+    const d = await resolveDir(pathArr);
+    if (await entryExists(d,n)){ alert('Already exists.'); return; }
+    await d.getFileHandle(n,{create:true});
+    S.expanded.add(pstr(pathArr));
+    log(`Created file ${n} in ${pstr(pathArr)||'/'}`,'ok'); await refreshAll();
+  }catch(e){ log('Create failed: '+e.message,'err'); }
+}
+async function treeNewFolder(pathArr){
+  const n = prompt('New folder name:','new-folder'); if(!n) return;
+  try{
+    const d = await resolveDir(pathArr);
+    if (await entryExists(d,n)){ alert('Already exists.'); return; }
+    await d.getDirectoryHandle(n,{create:true});
+    S.expanded.add(pstr(pathArr));
+    log(`Created folder ${n} in ${pstr(pathArr)||'/'}`,'ok'); await refreshAll();
+  }catch(e){ log('Create failed: '+e.message,'err'); }
+}
+
+/* ---------------- Editor ---------------- */
+const IMG_EXT = ['png','jpg','jpeg','gif','webp','bmp','svg','ico','avif'];
+async function openEditor(pathArr){
+  try{
+    const parent = await resolveDir(pathArr.slice(0,-1));
+    const name = pathArr[pathArr.length-1];
+    const fh = await parent.getFileHandle(name);
+    const file = await fh.getFile();
+    S.edit = {path:pathArr, name};
+    $('#edName').textContent = pstr(pathArr);
+    $('#edMeta').textContent = fmtSize(file.size);
+    $('#edStatus').textContent = '';
+    $('#edSaveAs').value = '';
+    const ext = (name.split('.').pop()||'').toLowerCase();
+    const text = $('#edText'), img = $('#edImg'), bin = $('#edBinary');
+    text.classList.add('hidden'); img.classList.add('hidden'); bin.classList.add('hidden');
+    $('#btnEdSave').disabled = true;
+    if (IMG_EXT.includes(ext)){
+      img.src = URL.createObjectURL(file);
+      img.classList.remove('hidden');
+    } else if (file.size > 5*1048576){
+      bin.textContent = '⚠️ File is larger than 5 MB — preview disabled.';
+      bin.classList.remove('hidden');
+    } else {
+      const content = await file.text();
+      if (content.includes('\u0000')){
+        bin.textContent = '⚠️ This looks like a binary file — editing is disabled.';
+        bin.classList.remove('hidden');
+      } else {
+        text.value = content;
+        text.classList.remove('hidden');
+        $('#btnEdSave').disabled = false;
+      }
+    }
+    $('#overlay').classList.add('open');
+  }catch(e){ log('Open failed: '+e.message,'err'); }
+}
+$('#btnEdClose').addEventListener('click',()=>$('#overlay').classList.remove('open'));
+$('#overlay').addEventListener('click',e=>{ if (e.target === $('#overlay')) $('#overlay').classList.remove('open'); });
+$('#btnEdSave').addEventListener('click',async()=>{
+  if (!S.edit) return;
+  try{
+    const parent = await resolveDir(S.edit.path.slice(0,-1));
+    const fh = await parent.getFileHandle(S.edit.name);
+    await writeText(fh, $('#edText').value);
+    $('#edStatus').textContent = '✓ saved';
+    log('Saved '+pstr(S.edit.path),'ok');
+    renderBrowse();
+  }catch(e){ $('#edStatus').textContent = 'save failed'; log('Save failed: '+e.message,'err'); }
+});
+$('#btnEdSaveAs').addEventListener('click',async()=>{
+  if (!S.edit) return;
+  const nn = $('#edSaveAs').value.trim();
+  if (!nn){ $('#edStatus').textContent='enter a filename first'; return; }
+  if (/[\\/]/.test(nn)){ $('#edStatus').textContent='no / in names'; return; }
+  try{
+    const parent = await resolveDir(S.edit.path.slice(0,-1));
+    const fh = await parent.getFileHandle(nn,{create:true});
+    await writeText(fh, $('#edText').value);
+    $('#edStatus').textContent = '✓ saved copy as '+nn;
+    log('Saved copy '+nn,'ok');
+    await refreshAll();
+  }catch(e){ $('#edStatus').textContent='save failed'; log('Save copy failed: '+e.message,'err'); }
+});
+
+/* ---------------- Batch create ---------------- */
+function expandPattern(line){
+  const m = line.match(/\{([^{}]+)\}/);
+  if (!m) return [line];
+  const tok = m[1];
+  let repl = [];
+  if (tok.includes(',')) repl = tok.split(',').map(s=>s.trim()).filter(Boolean);
+  else {
+    let r;
+    if ((r = tok.match(/^(\d+)-(\d+)$/))){
+      const pad = r[1].length > 1 && r[1][0] === '0' ? r[1].length : (r[1].length === r[2].length && r[1][0]==='0' ? r[1].length : (r[1][0]==='0' ? r[1].length : 0));
+      const s = parseInt(r[1],10), e = parseInt(r[2],10), step = s<=e?1:-1;
+      const width = r[1][0]==='0' ? r[1].length : 0;
+      for (let i=s; step>0 ? i<=e : i>=e; i+=step)
+        repl.push(width ? String(i).padStart(width,'0') : String(i));
+    } else if ((r = tok.match(/^([a-z])-([a-z])$/i))){
+      const s=r[1].charCodeAt(0), e=r[2].charCodeAt(0), step = s<=e?1:-1;
+      for (let i=s; step>0 ? i<=e : i>=e; i+=step) repl.push(String.fromCharCode(i));
+    } else repl = [tok];
+  }
+  const out = [];
+  for (const rp of repl){
+    out.push(...expandPattern(line.replace(m[0], rp)));
+    if (out.length > 2000) throw new Error('Pattern expands to more than 2000 items — aborted.');
+  }
+  return out;
+}
+function buildCreatePlan(){
+  const lines = $('#crList').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const typeMode = $('#crType').value;
+  const plan = [];
+  for (const line of lines){
+    for (const exp of expandPattern(line)){
+      let isFolder = exp.endsWith('/');
+      if (typeMode === 'file') isFolder = false;
+      if (typeMode === 'folder') isFolder = true;
+      const clean = exp.replace(/\/+$/,'').replace(/^\/+/,'');
+      if (!clean) continue;
+      const parts = clean.split('/').map(s=>s.trim()).filter(Boolean);
+      plan.push({parts, isFolder, display: parts.join('/') + (isFolder?'/':'')});
+      if (plan.length > 2000) throw new Error('More than 2000 items — aborted.');
+    }
+  }
+  return plan;
+}
+$('#btnCrPreview').addEventListener('click',()=>{
+  try{
+    const plan = buildCreatePlan();
+    const box = $('#crPreview'); box.innerHTML='';
+    if (!plan.length){ box.append(h('div',{class:'muted'},'Nothing to create.')); return; }
+    const tb = h('tbody');
+    plan.forEach(p=>tb.append(h('tr',null,
+      h('td',null,(p.isFolder?'📁 ':'📄 ') + p.display))));
+    box.append(h('table',{class:'list'}, h('thead',null,h('tr',null,h('th',null,`${plan.length} item(s) will be created in ${pstr(S.cwd)||'/'}`))), tb));
+    $('#crInfo').textContent='';
+  }catch(e){ $('#crInfo').textContent = e.message; }
+});
+$('#btnCrCreate').addEventListener('click',async()=>{
+  let plan;
+  try{ plan = buildCreatePlan(); }catch(e){ $('#crInfo').textContent = e.message; return; }
+  if (!plan.length){ $('#crInfo').textContent = 'Nothing to create — add some names first.'; return; }
+  const skipExisting = $('#crSkipExisting').checked;
+  const template = $('#crContent').value;
+  const base = await resolveDir(S.cwd);
+  let created=0, skipped=0, failed=0, i=0;
+  for (const p of plan){
+    i++;
+    try{
+      const dirParts = p.isFolder ? p.parts : p.parts.slice(0,-1);
+      const dir = await ensureDirPath(base, dirParts);
+      if (p.isFolder){ created++; continue; }
+      const fname = p.parts[p.parts.length-1];
+      const exists = await entryExists(dir, fname);
+      if (exists){ if (skipExisting){ skipped++; continue; } }
+      const fh = await dir.getFileHandle(fname,{create:true});
+      if (template){
+        const content = template
+          .replaceAll('{{name}}', fname)
+          .replaceAll('{{i}}', String(i))
+          .replaceAll('{{date}}', new Date().toISOString().slice(0,10));
+        await writeText(fh, content);
+      }
+      created++;
+    }catch(e){ failed++; log(`Create ${p.display} failed: ${e.message}`,'err'); }
+  }
+  $('#crInfo').textContent = `Created ${created}, skipped ${skipped}, failed ${failed}.`;
+  log(`Batch create: ${created} created, ${skipped} skipped, ${failed} failed.`, failed?'wrn':'ok');
+  $('#crPreview').innerHTML='';
+  await refreshAll();
+});
+
+/* ---------------- selection chips (rename + move/copy) ---------------- */
+function renderChips(){
+  for (const id of ['#selChips','#selChips2']){
+    const box = $(id); box.innerHTML='';
+    if (!S.selection.size){ box.append(h('span',{class:'muted'},'Nothing selected yet.')); continue; }
+    for (const item of S.selection.values()){
+      const x = h('b',{onclick:()=>{ S.selection.delete(pstr(item.path)); renderChips(); renderBrowse(); }},'×');
+      box.append(h('span',{class:'chip'}, (item.kind==='directory'?'📁 ':'📄 ') + pstr(item.path), x));
+    }
+  }
+  updateSelCount();
+}
+$('#btnRnClear').addEventListener('click',()=>{ S.selection.clear(); renderChips(); renderBrowse(); });
+$('#btnRnUseFolder').addEventListener('click',async()=>{
+  const entries = await listDir(await resolveDir(S.cwd));
+  for (const e of entries) S.selection.set(pstr([...S.cwd,e.name]), {path:[...S.cwd,e.name], name:e.name, kind:e.kind});
+  renderChips(); renderBrowse();
+});
+
+/* ---------------- Batch rename ---------------- */
+function computeNewName(name, kind, idx){
+  let stem = name, ext = '';
+  if (kind === 'file'){
+    const dot = name.lastIndexOf('.');
+    if (dot > 0){ stem = name.slice(0,dot); ext = name.slice(dot+1); }
+  }
+  if ($('#rnFindOn').checked && $('#rnFind').value){
+    const flags = 'g' + ($('#rnCaseIns').checked?'i':'');
+    let re;
+    if ($('#rnRegex').checked) re = new RegExp($('#rnFind').value, flags);
+    else re = new RegExp($('#rnFind').value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), flags);
+    stem = stem.replace(re, $('#rnRepl').value);
+  }
+  if ($('#rnAffixOn').checked) stem = ($('#rnPrefix').value||'') + stem + ($('#rnSuffix').value||'');
+  if ($('#rnNumOn').checked){
+    const n = String((parseInt($('#rnNumStart').value,10)||1) + idx)
+      .padStart(parseInt($('#rnNumPad').value,10)||1, '0');
+    stem = $('#rnNumPos').value === 'prefix' ? `${n}_${stem}` : `${stem}_${n}`;
+  }
+  if ($('#rnCaseOn').checked){
+    const mode = $('#rnCase').value;
+    if (mode==='lower') stem = stem.toLowerCase();
+    else if (mode==='upper') stem = stem.toUpperCase();
+    else if (mode==='title') stem = stem.toLowerCase().replace(/(^|[\s_\-.])(\p{L})/gu,(m,a,b)=>a+b.toUpperCase());
+  }
+  if ($('#rnExtOn').checked && kind==='file'){
+    ext = $('#rnExt').value.replace(/^\./,'');
+  }
+  return ext ? `${stem}.${ext}` : stem;
+}
+async function buildRenamePlan(){
+  const items = [...S.selection.values()];
+  const plan = [];
+  const targetsByParent = new Map(); // parentPathStr -> Set(newName)
+  let idx = 0;
+  for (const it of items){
+    const nn = computeNewName(it.name, it.kind, idx++);
+    const parentStr = pstr(it.path.slice(0,-1));
+    if (!targetsByParent.has(parentStr)) targetsByParent.set(parentStr, new Set());
+    let status = 'ok', note = '';
+    if (!nn || /[\\/]/.test(nn)){ status='err'; note='invalid name'; }
+    else if (nn === it.name){ status='skip'; note='unchanged'; }
+    else if (targetsByParent.get(parentStr).has(nn)){ status='err'; note='duplicate target'; }
+    else {
+      const parent = await resolveDir(it.path.slice(0,-1));
+      if (await entryExists(parent, nn)){ status='err'; note='already exists'; }
+    }
+    if (status==='ok') targetsByParent.get(parentStr).add(nn);
+    plan.push({item:it, newName:nn, status, note});
+  }
+  return plan;
+}
+async function showRenamePreview(){
+  if (!S.selection.size){ $('#rnInfo').textContent = 'Select some items first (Browse tab or tree).'; return null; }
+  let plan;
+  try{ plan = await buildRenamePlan(); }
+  catch(e){ $('#rnInfo').textContent = 'Error: '+e.message; return null; }
+  const box = $('#rnPreview'); box.innerHTML='';
+  const tb = h('tbody');
+  for (const p of plan){
+    tb.append(h('tr',null,
+      h('td',{class:'mono'}, (p.item.kind==='directory'?'📁 ':'📄 ') + p.item.name),
+      h('td',{class:'mono ' + (p.status==='ok'?'ok':p.status==='skip'?'muted':'err')}, '→ ' + p.newName),
+      h('td',{class: p.status==='err'?'err':'muted'}, p.note),
+    ));
+  }
+  box.append(h('table',{class:'list'},
+    h('thead',null,h('tr',null,h('th',null,'Current'),h('th',null,'New'),h('th',null,''))), tb));
+  const okCount = plan.filter(p=>p.status==='ok').length;
+  $('#rnInfo').textContent = `${okCount} of ${plan.length} will be renamed.`;
+  return plan;
+}
+$('#btnRnPreview').addEventListener('click',showRenamePreview);
+$('#btnRnApply').addEventListener('click',async()=>{
+  const plan = await showRenamePreview();
+  if (!plan) return;
+  let ok=0, failed=0;
+  for (const p of plan){
+    if (p.status!=='ok') continue;
+    try{
+      const parent = await resolveDir(p.item.path.slice(0,-1));
+      await renameEntry(parent, p.item.name, p.item.kind, p.newName);
+      S.selection.delete(pstr(p.item.path));
+      ok++;
+    }catch(e){ failed++; log(`Rename ${p.item.name} failed: ${e.message}`,'err'); }
+  }
+  log(`Batch rename: ${ok} renamed, ${failed} failed.`, failed?'wrn':'ok');
+  $('#rnInfo').textContent = `Renamed ${ok} item(s)${failed?`, ${failed} failed`:''}.`;
+  $('#rnPreview').innerHTML='';
+  await refreshAll();
+});
+
+/* ---------------- Search ---------------- */
+function wildcardToRegex(q){
+  const esc = q.replace(/[.+^${}()|[\]\\]/g,'\\$&').replace(/\*/g,'.*').replace(/\?/g,'.');
+  return new RegExp(esc, 'i');
+}
+$('#btnSearch').addEventListener('click',doSearch);
+$('#sQuery').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
+async function doSearch(){
+  const q = $('#sQuery').value.trim();
+  const typeF = $('#sType').value;
+  const scope = $('#sScope').value === 'cwd' ? S.cwd : [];
+  const recursive = $('#sRecursive').checked;
+  const inContent = $('#sContent').checked;
+  if (!q && !inContent){ $('#sInfo').textContent = 'Type something to search for.'; return; }
+  const nameRe = q ? (q.includes('*')||q.includes('?') ? wildcardToRegex(q) : null) : null;
+  const qLower = q.toLowerCase();
+  const results = [];
+  $('#sInfo').textContent = 'Searching…';
+  const startDir = await resolveDir(scope);
+  async function visit(e, p){
+    if (typeF !== 'all' && e.kind !== typeF) return;
+    let nameHit = q ? (nameRe ? nameRe.test(e.name) : e.name.toLowerCase().includes(qLower)) : false;
+    let contentHit = false;
+    if (!nameHit && inContent && e.kind === 'file'){
+      try{
+        const f = await e.getFile();
+        if (f.size <= 1048576){
+          const t = await f.text();
+          if (!t.includes('\u0000') && (q ? t.toLowerCase().includes(qLower) : false)) contentHit = true;
+        }
+      }catch(err){}
+    }
+    if (nameHit || contentHit){
+      let size = null;
+      if (e.kind==='file'){ try{ size = (await e.getFile()).size; }catch(err){} }
+      results.push({path:p, name:e.name, kind:e.kind, size, via: contentHit && !nameHit ? 'content' : 'name'});
+    }
+  }
+  if (recursive){
+    await walk(startDir, scope, visit);
+  } else {
+    for await (const e of startDir.values()) await visit(e, [...scope, e.name]);
+  }
+  renderSearchResults(results);
+  $('#sInfo').textContent = `${results.length} result(s).`;
+  log(`Search “${q}” → ${results.length} result(s).`);
+}
+function renderSearchResults(results){
+  const box = $('#sResults'); box.innerHTML='';
+  if (!results.length) return;
+  const tb = h('tbody');
+  for (const r of results){
+    const ps = pstr(r.path);
+    const cb = h('input',{type:'checkbox'});
+    cb.checked = S.selection.has(ps);
+    cb.addEventListener('change',()=>toggleSelect(r.path, r.name, r.kind, cb.checked));
+    tb.append(h('tr',null,
+      h('td',null,cb),
+      h('td',{class:'mono'},
+        h('span',{class:'icon'}, r.kind==='directory'?'📁':'📄'),
+        h('span',{class:'ename', onclick:()=> r.kind==='directory' ? (navigate(r.path), showTab('browse')) : openEditor(r.path)}, ps),
+        r.via==='content' ? h('span',{class:'muted'},'  (in content)') : null),
+      h('td',{class:'muted mono'}, r.kind==='file' ? fmtSize(r.size) : ''),
+      h('td',null,h('div',{class:'rowActs'},
+        h('button',{class:'mini', onclick:()=>{ navigate(r.path.slice(0,-1)); showTab('browse'); }},'Go to folder'),
+        r.kind==='file' ? h('button',{class:'mini', onclick:()=>openEditor(r.path)},'✏️ Edit') : null,
+        h('button',{class:'mini danger', onclick:()=>deleteOne(r.path, r.name, r.kind)},'🗑'),
+      )),
+    ));
+  }
+  box.append(h('table',{class:'list'},
+    h('thead',null,h('tr',null,h('th',{style:'width:28px'},''),h('th',null,'Path'),h('th',{style:'width:100px'},'Size'),h('th',{style:'width:230px'},''))), tb));
+}
+
+/* ---------------- Move / Copy ---------------- */
+async function renderDestTree(){
+  if (!S.root) return;
+  const box = $('#destTree'); box.innerHTML='';
+  box.append(await destNode([], S.rootName));
+  $('#destLabel').textContent = pstr(S.destPath) || '/';
+}
+async function destNode(pathArr, label){
+  const ps = pstr(pathArr);
+  const li = h('div',{class:'tnode'});
+  const isOpen = S.expanded.has(ps);
+  const isSel = pstr(S.destPath) === ps;
+  const row = h('div',{class:'trow' + (isSel?' current':'')},
+    h('span',{class:'caret', onclick:ev=>{ev.stopPropagation();
+      if (S.expanded.has(ps)) S.expanded.delete(ps); else S.expanded.add(ps);
+      renderDestTree();
+    }}, isOpen?'▾':'▸'),
+    h('span',{class:'icon'},'📁'),
+    h('span',{class:'tname'}, label),
+  );
+  row.addEventListener('click',()=>{
+    S.destPath = pathArr;
+    if (!S.expanded.has(ps)) S.expanded.add(ps);
+    renderDestTree();
+  });
+  li.append(row);
+  if (isOpen){
+    const kids = h('div',{class:'tchildren'});
+    try{
+      const dir = await resolveDir(pathArr);
+      for (const e of await listDir(dir)){
+        if (e.kind === 'directory') kids.append(await destNode([...pathArr, e.name], e.name));
+      }
+    }catch(e){}
+    li.append(kids);
+  }
+  return li;
+}
+async function doMoveCopy(mode){
+  if (!S.selection.size){ $('#mcInfo').textContent = 'Nothing selected — tick items in Browse or Search first.'; return; }
+  const conflict = $('#mcConflict').value;
+  let destPath = [...S.destPath];
+  const sub = $('#mcNewSub').value.trim().replace(/^\/+|\/+$/g,'');
+  try{
+    let destDir = await resolveDir(destPath);
+    if (sub){
+      const parts = sub.split('/').map(s=>s.trim()).filter(Boolean);
+      destDir = await ensureDirPath(destDir, parts);
+      destPath = [...destPath, ...parts];
+    }
+    const destStr = pstr(destPath);
+    let ok=0, skipped=0, failed=0;
+    for (const item of [...S.selection.values()]){
+      const srcStr = pstr(item.path);
+      // guards: folder into itself/its subtree; same-folder move
+      if (item.kind==='directory' && (destStr === srcStr || destStr.startsWith(srcStr + '/'))){
+        skipped++; log(`Skipped ${item.name}: cannot ${mode} a folder into itself.`,'wrn'); continue;
+      }
+      const srcParentStr = pstr(item.path.slice(0,-1));
+      if (mode==='move' && srcParentStr === destStr){ skipped++; continue; }
+      try{
+        let target = item.name;
+        const exists = await entryExists(destDir, target);
+        if (exists){
+          if (conflict==='skip'){ skipped++; continue; }
+          if (conflict==='overwrite') await destDir.removeEntry(target,{recursive:true});
+          if (conflict==='rename') target = await uniqueName(destDir, target);
+        }
+        const srcParent = await resolveDir(item.path.slice(0,-1));
+        if (mode==='copy'){
+          const src = await getEntry(srcParent, item.name, item.kind);
+          await copyEntry(src, destDir, target);
+        } else {
+          await moveEntry(srcParent, item.name, item.kind, destDir, target);
+          S.selection.delete(srcStr);
+        }
+        ok++;
+      }catch(e){ failed++; log(`${mode} ${item.name} failed: ${e.message}`,'err'); }
+    }
+    $('#mcInfo').textContent = `${mode==='copy'?'Copied':'Moved'} ${ok}, skipped ${skipped}, failed ${failed} → ${destStr||'/'}`;
+    log(`${mode==='copy'?'Copy':'Move'}: ${ok} done, ${skipped} skipped, ${failed} failed → ${destStr||'/'}`, failed?'wrn':'ok');
+    await refreshAll(); renderDestTree(); renderChips();
+  }catch(e){ $('#mcInfo').textContent = 'Failed: '+e.message; log(`${mode} failed: ${e.message}`,'err'); }
+}
+$('#btnCopy').addEventListener('click',()=>doMoveCopy('copy'));
+$('#btnMove').addEventListener('click',()=>doMoveCopy('move'));
+
+/* ---------------- log toggle + boot ---------------- */
+$('#logHead').addEventListener('click',()=>{
+  const l = $('#log'); const hid = l.classList.toggle('hidden');
+  $('#logToggle').textContent = hid ? '▸ show' : '▾ hide';
+});
+$('#btnOpen').addEventListener('click',openRealFolder);
+$('#btnOpen2').addEventListener('click',openRealFolder);
+$('#btnSandbox').addEventListener('click',openSandbox);
+$('#btnSandbox2').addEventListener('click',openSandbox);
+
+if (!window.showDirectoryPicker){
+  $('#apiNote').textContent = '⚠ Real folders need Chrome/Edge — sandbox works everywhere';
+  $('#btnOpen').disabled = true; $('#btnOpen2').disabled = true;
+}
+</script>
+</body>
+</html>
