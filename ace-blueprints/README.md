@@ -2,7 +2,7 @@
 
 Ten Production Blueprints, built with the ACE Songwriting framework, for the ten human-experience themes. **Every song uses the single master style below**; the per-theme genre labels from the brief (City Pop, indie-folk, synth-wave, gospel R&B and so on) are deliberately ignored. What changes from song to song is the *arrangement*: tempo, structure, who enters when, how the collapse happens, how the swell is built.
 
-**Scope: arrangement only.** Each file follows the framework's six-section blueprint (Header & Style DNA · Song Map · Section-by-Section Arrangement · Full Production Score · Audio Alchemy Prompt · Hit Architecture Compliance) plus the FL Studio Implementation table. Vocal sections carry a one-line *lyric job* in place of lyrics, and the Bilingual Singback pillar is marked ⚠️ Deferred until lyrics are written.
+**Scope: arrangement and lyrics.** Each file follows the framework's six-section blueprint (Header & Style DNA · Song Map · Section-by-Section Arrangement · Full Production Score · Audio Alchemy Prompt · Hit Architecture Compliance) plus the FL Studio Implementation table and a short Lyric Craft Notes appendix (theme brief, hook map, syllable budgets, hardest line). Lyrics are in English, written to the framework's Anti-Cliché and Lyric Craft mandates.
 
 ## Master style (shared by all ten songs)
 
@@ -16,7 +16,7 @@ Section 5 of each blueprint maps this onto the 7-layer Audio Alchemy order with 
 
 | Gate | Selection (carried unchanged through every blueprint) |
 |------|-------------------------------------------------------|
-| Scope | Arrangement only (no lyrics, no MBTI persona) |
+| Scope | Arrangement first, then full lyrics — no MBTI persona |
 | Gate 1 — Producer Profile | Voice Donor **Kim Jong-wan** (minimalist-to-epic builds, earned crescendos, cello/contrabass anchors, instrument entry as storytelling, power as a designed event) + Method Donor **Quincy Jones** (register mapping, blocks not soloists, one counterline at a time, one reserved “lift”). The blueprints translate both into sonic descriptors — no names appear in them. |
 | Gate 2 — Instrument Palette | **A) Cathedral Dark.** Bass: Morphine → BAS Upright Bass NUC + GMS → Pure Bass (sub). Cello: Sakura → STR Cello FG. Pad: Morphine → ATM Stalker. Wave: GMS → Moon Landing TE. Strings: FLEX → Dark Orchestra by UVI. Choir: Morphine → PAD Catholic Choir MC. SFX: Toxic Biohazard → SubWoofer Bomb ToTc + Industrial Hazard ToTc. **Harmonica has no FL preset** and is a recorded/sampled part (Suno token `Harmonica`). |
 | Gates 3 + 4 — Drums, Pattern, FX | **1) Metallic + Slow Beat.** Kits: Drumaxx → Slow Beat MC (shuffle body, re-gridded to triplets — Drumaxx has no pre-built shuffle category) + Metallic SPYRO (industrial). Patterns: Slow Beat base + Industrial 01–06 for the drops. FX: Fruity Convolver (dark cistern IR) master send, ValhallaVintageVerb on vocals, Gross Beat (tape-stop/stutter), Fruity Squeeze (bit-crush), Frequency Shifter + Vocodex (spectral choir), Fruity Blood Overdrive + Distructor (cello fuzz), Maximus on the bus. |
@@ -25,18 +25,18 @@ Where a blueprint calls for a low-pass, high-pass or band-limit (for example the
 
 ## Songs
 
-| # | Song | Mutation | BPM | Length | First chorus | Arrangement idea |
-|---|---|---|---|---|---|---|
-| 1 | [Borrowing from Tomorrow](01-borrowing-from-tomorrow.md) | Ledger-Tick Blues Noir | 84 | 3:54 | 0:46 | An overdrawn account: layers are only ever added, then the balance hits zero. |
-| 2 | [Inherited Shadows](02-inherited-shadows.md) | Heirloom Dirge Blues | 72 | 3:47 | 0:40 | A four-note motif is handed down instrument to instrument; the parent ends up sheltering under the child’s voice. |
-| 3 | [The Sugar Rush (Gone by Morning)](03-the-sugar-rush-gone-by-morning.md) | Comedown Shuffle Noir | 90 | 3:49 | 0:48 | Every hit comes with a comedown; the last chorus is stripped of everything the rush built. |
-| 4 | [Compounding Weight](04-compounding-weight.md) | Compound-Interest Drone Blues | 70 | 3:46 | 0:41 | One bass figure never changes while layers and subdivisions stack on top of it; the ending reveals how small the original burden was. |
-| 5 | [Planting Seeds You Won’t See Grow](05-planting-seeds-you-wont-see-grow.md) | Hollow-Congregation Call-and-Response Blues | 76 | 3:54 | 0:38 | Call-and-response that grows from one voice to a congregation, then hangs on an unresolved chord: the harvest belongs to someone else. |
-| 6 | [The Illusion of Plenty](06-the-illusion-of-plenty.md) | Facade Fusion Noir | 88 | 3:38 | 0:55 | A flawless, over-polished surface that cracks section by section until the reverb itself is taken away. |
-| 7 | [Shrinking Pockets in a Big City](07-shrinking-pockets-in-a-big-city.md) | Eroding-Bandwidth Blues | 80 | 3:42 | 0:48 | The twelve-bar form, the bandwidth, the low end and the refrain all shrink each section; the solo is the city rising around one person. |
-| 8 | [The Day the Ledger Clears](08-the-day-the-ledger-clears.md) | Courtroom-March Blues | 74 | 3:47 | 0:39 | A courtroom march: stomping percussion, a spoken ledger stamped after every entry, and an ending on a bare open fifth. |
-| 9 | [Stronger Foundations](09-stronger-foundations.md) | Bedrock-Up Blues | 78 | 3:48 | 0:49 | Built from the bottom up, one register at a time; a flashy tower with no low end collapses like sand and is rebuilt slowly, in the right order. |
-| 10 | [Breaking the Chain](10-breaking-the-chain.md) | Broken-Loop Blues | 86 | 3:49 | 0:45 | The same four-bar loop for the whole song — until it is cut, the shuffle goes straight, and the album finally lands on E major. |
+| # | Song | Mutation | BPM | Length | First chorus | Hook | Arrangement idea |
+|---|---|---|---|---|---|---|---|
+| 1 | [Borrowing from Tomorrow](01-borrowing-from-tomorrow.md) | Ledger-Tick Blues Noir | 84 | 3:54 | 0:46 | “I’ll pay you tomorrow” | An overdrawn account: layers are only ever added, then the balance hits zero. |
+| 2 | [Inherited Shadows](02-inherited-shadows.md) | Heirloom Dirge Blues | 72 | 3:47 | 0:40 | “I’ll take it. Go on.” | A four-note motif is handed down instrument to instrument; the parent ends up sheltering under the child’s voice. |
+| 3 | [The Sugar Rush (Gone by Morning)](03-the-sugar-rush-gone-by-morning.md) | Comedown Shuffle Noir | 90 | 3:49 | 0:48 | “Sweet as it gets right now” | Every hit comes with a comedown; the last chorus is stripped of everything the rush built. |
+| 4 | [Compounding Weight](04-compounding-weight.md) | Compound-Interest Drone Blues | 70 | 3:46 | 0:41 | “Just a little.” | One bass figure never changes while layers and subdivisions stack on top of it; the ending reveals how small the original burden was. |
+| 5 | [Planting Seeds You Won’t See Grow](05-planting-seeds-you-wont-see-grow.md) | Hollow-Congregation Call-and-Response Blues | 76 | 3:54 | 0:38 | “What does it mean?” | Call-and-response that grows from one voice to a congregation, then hangs on an unresolved chord: the harvest belongs to someone else. |
+| 6 | [The Illusion of Plenty](06-the-illusion-of-plenty.md) | Facade Fusion Noir | 88 | 3:38 | 0:55 | “We’re doing fine” | A flawless, over-polished surface that cracks section by section until the reverb itself is taken away. |
+| 7 | [Shrinking Pockets in a Big City](07-shrinking-pockets-in-a-big-city.md) | Eroding-Bandwidth Blues | 80 | 3:42 | 0:48 | “Buys less than last year” | The twelve-bar form, the bandwidth, the low end and the refrain all shrink each section; the solo is the city rising around one person. |
+| 8 | [The Day the Ledger Clears](08-the-day-the-ledger-clears.md) | Courtroom-March Blues | 74 | 3:47 | 0:39 | “Pay what you owe” | A courtroom march: stomping percussion, a spoken ledger stamped after every entry, and an ending on a bare open fifth. |
+| 9 | [Stronger Foundations](09-stronger-foundations.md) | Bedrock-Up Blues | 78 | 3:48 | 0:49 | “Take the long way home” | Built from the bottom up, one register at a time; a flashy tower with no low end collapses like sand and is rebuilt slowly, in the right order. |
+| 10 | [Breaking the Chain](10-breaking-the-chain.md) | Broken-Loop Blues | 86 | 3:49 | 0:45 | “It stops with me” | The same four-bar loop for the whole song — until it is cut, the shuffle goes straight, and the album finally lands on E major. |
 
 The tempo map across the album is 84 → 72 → 90 → 70 → 76 → 88 → 80 → 74 → 78 → 86 BPM. Every song stays under 4:00.
 
@@ -59,6 +59,13 @@ Every song has the same four ingredients — a dragging shuffle (or a deliberate
 
 **G♯ (the major third) is rationed.** It only *flashes* — the borrowed bright note and an E7♭9 turnaround in song 1, a brief E7♭9 in song 3, the polite E7♯9 cadence in song 6, and in song 5 a hanging E7♭9 and a final lone G♯ — and is never allowed to settle. The first time a G♯ stays, over a full E major chord, is song 10. Songs 2, 4, 7, 8 and 9 never use it.
 
+## Lyric conventions
+
+- **Language and setting:** English; a placeless city; money is in plain dollars, with no brand names or real places. Specificity comes from objects (a pizza magnet, a pencil on a string, a shovel that rings), not from proper nouns.
+- **Theme named at most once.** Each song's theme is enacted through a displaced scene and named at most in its hook — for example “tomorrow” in song 1, “it stops with me” in song 10. Words like debt, interest, inflation, foundation and chain never appear in a sung line.
+- **Hooks** are short, repeat verbatim, and end on an open vowel or a hummable consonant, so the Bilingual Singback pillar is met phonetically; nothing is translated.
+- **Self-checks:** banned phrases, banned rhyme pairs and “Every X / Every Y” constructions were checked by script across all ten songs (none found); the rest was read by hand. Syllable budgets come from a heuristic counter. Run `/ace-audit` for an independent pass.
+
 ## Shared vocabulary
 
 - **Bar:** one 4/4 bar of shuffle (12/8 feel) at the song’s BPM. Rhythm maps use 12 triplet slots per bar; the legend is at the top of each Section 3.
@@ -71,6 +78,6 @@ Every song has the same four ingredients — a dragging shuffle (or a deliberate
 
 ## Using these
 
-1. **Suno / Udio / ACE-Step:** paste Section 5’s bracketed prompt into the style field. The structural metatags below it go in the lyrics field, which still needs lyrics.
+1. **Suno / Udio / ACE-Step:** paste Section 5’s bracketed prompt into the style field and the “Lyrics field” block below it into the lyrics field. It already contains the structural metatags and the lyrics; parentheses mark backing or answer vocals.
 2. **FL Studio:** follow the FL Studio Implementation table at the end of each file and the rhythm maps in Section 3.
-3. **Next steps in the framework:** `/ace-write` to add lyrics (the lyric jobs are written to slot straight in), `/ace-audit` to review them, `/audio-alchemy` to refine a prompt, `/album-generator` for cover art.
+3. **Next steps in the framework:** `/ace-audit` for an independent two-pass review of the lyrics, `/audio-alchemy` to refine a prompt, `/album-generator` for cover art.

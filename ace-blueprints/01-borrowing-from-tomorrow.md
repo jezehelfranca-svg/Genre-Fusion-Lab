@@ -39,7 +39,10 @@
 *Bars 5–12 · 0:11–0:34 · energy 3 ▃*
 
 - **Lyrics:**
-(Lyric job — the easy joy of spending today: warm, a little too casual. Baritone alone.)
+Third round’s on me, I’m waving off the menu.  
+The card reader chirps *approved*, like it’s proud of me.  
+I tip in twenties I haven’t earned yet,  
+the waiter calls me boss twice, in case I missed it.
 
 - **Cue:** A **sparse, breathing** room. SLOW BEAT plays half-time: kick on 1, rim-click on 3, ghost hats leaning behind the grid. UPRIGHT walks root – fifth – ♭9, three notes a bar with big gaps; CELLO drops out except for one **low growl** on the turnaround of bars 4 and 8. The baritone is alone, close and dry in front of the reverb. The Ticker doubles to two per bar. Leave half the arrangement empty — the space is the identity.
 
@@ -59,7 +62,10 @@ TICKER (METALLIC)     .  .  .  .  .  .  .  .  ^  .  .  ^  │ .  .  .  .  .  .  
 *Bars 13–16 · 0:34–0:46 · energy 4 ▃*
 
 - **Lyrics:**
-(Lyric job — the bill is coming, but ‘later’ is a comfortable word. Baritone leads; the contralto answers half a bar behind, her first entrance.)
+*(baritone)* I’ll sort it Monday, I say,  
+*(answer)* Monday?  
+*(baritone)* There’s plenty of room on Monday.  
+*(answer)* Whose room?
 
 - **Cue:** The room begins to **wake up**. The rim moves to 2 and 4 for the first time and the hats open into the full shuffle. The contralto answers every line a half-bar late — the future talking back. CELLO makes one **long ascending slide** from E to C across bars 1–3. HARP echoes the five-note cell over Am7 → Fmaj7♯11, same pitches, new harmony. On bar 4, beat 4-and: Industrial drop #1 — HAZARD steel-pipe strike with a BOMB boom, then an eighth-note of silence before the chorus.
 
@@ -67,7 +73,10 @@ TICKER (METALLIC)     .  .  .  .  .  .  .  .  ^  .  .  ^  │ .  .  .  .  .  .  
 *Bars 17–24 · 0:46–1:09 · energy 6 ▅*
 
 - **Lyrics:**
-(Lyric job — the hook: borrowing from tomorrow. Octave unison; the borrowed bright note falls back to minor.)
+Put it on mine, I’ve got it, I’ve got it.  
+Somebody sober will sign on Monday.  
+Whoever he is, he can have the receipt —  
+I’ll pay you tomorrow.
 
 - **Cue:** The room **expands** — not louder, wider. SLOW BEAT goes to the full dragging shuffle (kick on 1 and the ‘a’ of 2, snare on 3); SUB opens to its full 41 Hz and locks with UPRIGHT on long roots. MOON enters on the Fmaj7♯11 bars with a slow filter swell; CELLO doubles the hook an octave down, sliding on the G♯ → G fall. Baritone (E3) and contralto (E4) sing the hook in octave unison — B – G♯ – G – F – E, the G♯ on the strong beat, borrowed, then paid back. On the last word, ‘tomorrow’, the spectral choir takes over: two ghost copies delayed ½ and 1 beat, each darker. Ticker at four per bar.
 
@@ -96,7 +105,10 @@ Bar 8 adds a short low-tom roll on slots 8–11. MOON pad joins on the Fmaj7♯1
 *Bars 29–36 · 1:20–1:43 · energy 4 ▃*
 
 - **Lyrics:**
-(Lyric job — the credit-card version of joy: dinners, taxis, gifts. Baritone with a quiet octave-above double.)
+Sunday, the statement’s under a pizza magnet,  
+so I open it standing up, still in my coat.  
+A scarf for my sister, who’d said she was fine.  
+Minimum due: forty-one. I read it twice.
 
 - **Cue:** Nothing from Chorus 1 is taken away — the account is open and spending. SLOW BEAT as in verse 1 with ghost snares and a rim on beat 4. HARP returns as an **answering sigh** after every baritone line (E – F). A STALKER wash fades in under bars 5–8: a second layer, ‘purchased’. The Ticker is now four per bar.
 
@@ -104,7 +116,10 @@ Bar 8 adds a short low-tom roll on slots 8–11. MOON pad joins on the Fmaj7♯1
 *Bars 37–40 · 1:43–1:54 · energy 5 ▄*
 
 - **Lyrics:**
-(Lyric job — the contralto leads this time, the baritone answers: the creditor’s voice.)
+*(contralto)* It’s Monday. Look at the screen.  
+*(answer)* I’m looking.  
+*(contralto)* Then look at the number.  
+*(answer)* I’m looking.
 
 - **Cue:** The same ramp, **sharper**: the industrial drop lands one beat early (bar 4, beat 3-and) — a bounced cheque. DARK ORCH enters for the first time: a wailing minor-second sigh (E – F), pitch-bent and tape-warbled. HARP repeats the cell a third higher over the Am7.
 
@@ -112,7 +127,7 @@ Bar 8 adds a short low-tom roll on slots 8–11. MOON pad joins on the Fmaj7♯1
 *Bars 41–48 · 1:54–2:17 · energy 7 ▆*
 
 - **Lyrics:**
-(Lyric job — the hook again, louder because it is more expensive. Octave unison.)
+(Same words as Chorus 1.)
 
 - **Cue:** Everything from Chorus 1, plus **weight**: DARK ORCH holds the Fmaj7♯11 bars in wails, CELLO’s fuzz opens and doubles the hook in its upper register, crash accents on bars 1 and 5. The spectral choir tail doubles to four beats, with a ghost harmony in the gap after the hook. On bar 5 downbeat, Industrial drop #2 (HAZARD + BOMB) — the loudest in the song. This is the **fullest the mix ever gets** before the collapse. Power moment: the last line.
 
@@ -135,7 +150,10 @@ TICKER:  ^ (bar 1)    ^   ^   ^   ^ (bar 2: one per beat, dry)
 *Bars 51–58 · 2:23–2:46 · energy 2 ▂*
 
 - **Lyrics:**
-(Lyric job — the morning the card is declined. The contralto alone over the sub for bars 1–4; the baritone joins in bar 5 a third below.)
+*(contralto)* Coffee place, ten past seven, line behind me.  
+*(contralto)* She says, *Do you have another card?*  
+*(both voices)* I do. That’s the thing. I always do.  
+*(hummed — the contralto hums B – G♯ – G on bar 7)*
 
 - **Cue:** The **emptiest room** in the song. SUB sustains E1 and there are no drums. CELLO plays sparse pizzicato slides, each with a half-tone bend. The contralto sings alone, almost spoken, while the Ticker runs at eight per bar like a pulse. The baritone joins in bar 5 a third below, **hollow, unforced**. Chords: Cmaj7 | Dm7 | Em7♭9 | Em7♭9 | Am7 | Fmaj7♯11 | Dm7 | Em7♭9. On bar 7 the contralto hums B – G♯ – G — the callback.
 
@@ -172,7 +190,10 @@ HAZARD+BOMB:  .     .     .     .     .     .     .     ! beat 4, then [2 BEATS 
 *Bars 67–74 · 3:09–3:31 · energy 9 ▇*
 
 - **Lyrics:**
-(Lyric job — it has all been paid for, and the cost is the point. Octave unison; ad-libs permitted here only.)
+Put it on mine, I’ve got it, I’ve got it.  
+Somebody sober signed it on Monday.  
+Turns out he’s me, and he kept the receipt —  
+I’m paying today.
 
 - **Cue:** The **earned** peak. The hook is now B – G – G – F – E: no lead ever sings the G♯; one cracked ghost note survives inside the spectral choir. The one lift is spent here — the **full spectral-choir block** at full width, and CHOIR PAD swelling under the Fmaj7♯11 bars for the first time. Full kit, crash on every bar 1; CELLO in its cry register; DARK ORCH sustaining across bars 3–4 and 7–8. Bar 8 stays on Em7♭9 — no E7♭9, no more borrowing. Ad-libs permitted here and nowhere else.
 
@@ -207,39 +228,63 @@ TICKER:       ^ ^     ^       ^       ^ ...  (LAST to fade — one final tick)
 
 ## 4. Full Production Score (Clean)
 
-*(Arrangement-only pass: sung lines appear as bracketed lyric jobs, to be replaced by lyrics later.)*
+*(Stage cues in italics mark who sings a line; untagged lines are sung by whoever the section’s cue names.)*
 
 **[Intro — Sub in the cold, harmonica breathes the cell, first tick]**
 
 **[Verse 1 — Half-time shuffle, upright walks, baritone alone, two ticks a bar]**
-(the easy joy of spending today: warm, a little too casual. Baritone alone.)
+Third round’s on me, I’m waving off the menu.  
+The card reader chirps *approved*, like it’s proud of me.  
+I tip in twenties I haven’t earned yet,  
+the waiter calls me boss twice, in case I missed it.
 
 **[Pre-Chorus 1 — Rim to 2 and 4, contralto answers, pipe strike before the chorus]**
-(the bill is coming, but ‘later’ is a comfortable word. Baritone leads; the contralto answers half a bar behind, her first entrance.)
+*(baritone)* I’ll sort it Monday, I say,  
+*(answer)* Monday?  
+*(baritone)* There’s plenty of room on Monday.  
+*(answer)* Whose room?
 
 **[Chorus 1 — Room widens, full drag shuffle, octave unison hook, choir catches last word]**
-(the hook: borrowing from tomorrow. Octave unison; the borrowed bright note falls back to minor.)
+Put it on mine, I’ve got it, I’ve got it.  
+Somebody sober will sign on Monday.  
+Whoever he is, he can have the receipt —  
+I’ll pay you tomorrow.
 
 **[Post-Chorus Tag — Harmonica and cello trade the cell over a thin shuffle]**
 
 **[Verse 2 — Same verse, fuller room, harmonica sighs, wash bought on credit]**
-(the credit-card version of joy: dinners, taxis, gifts. Baritone with a quiet octave-above double.)
+Sunday, the statement’s under a pizza magnet,  
+so I open it standing up, still in my coat.  
+A scarf for my sister, who’d said she was fine.  
+Minimum due: forty-one. I read it twice.
 
 **[Pre-Chorus 2 — Contralto leads, early pipe strike, strings sigh for the first time]**
-(the contralto leads this time, the baritone answers: the creditor’s voice.)
+*(contralto)* It’s Monday. Look at the screen.  
+*(answer)* I’m looking.  
+*(contralto)* Then look at the number.  
+*(answer)* I’m looking.
 
 **[Chorus 2 — Same chorus, heavier: wailing strings, loudest drop, long choir tail]**
-(the hook again, louder because it is more expensive. Octave unison.)
+Put it on mine, I’ve got it, I’ve got it.  
+Somebody sober will sign on Monday.  
+Whoever he is, he can have the receipt —  
+I’ll pay you tomorrow.
 
 **[Collapse: Overdraft — Tape-stop, then silence with only the ticking]**
 
 **[Bridge: The Empty Account — Contralto alone over sub, heartbeat ticks, baritone joins below]**
-(the morning the card is declined. The contralto alone over the sub for bars 1–4; the baritone joins in bar 5 a third below.)
+*(contralto)* Coffee place, ten past seven, line behind me.  
+*(contralto)* She says, *Do you have another card?*  
+*(both voices)* I do. That’s the thing. I always do.  
+*(hummed — the contralto hums B – G♯ – G on bar 7)*
 
 **[Solo: Intimate → Wave — Cello alone, then a layer every two bars into a wave]**
 
 **[Final Chorus — The earned peak: full choir block, no borrowed note, ad-libs]**
-(it has all been paid for, and the cost is the point. Octave unison; ad-libs permitted here only.)
+Put it on mine, I’ve got it, I’ve got it.  
+Somebody sober signed it on Monday.  
+Turns out he’s me, and he kept the receipt —  
+I’m paying today.
 
 **[Wave Tag — Wordless wave at maximum, drops on bars one and three]**
 
@@ -253,23 +298,68 @@ Single bracketed prompt, 7-layer order (910 characters, no artist names):
 [bleak urban blues fusion, dragging triplet shuffle against sporadic industrial percussive drops, melancholic and theatrically despairing, 84 BPM, E minor Phrygian with jazz-blues extensions, raw male baritone and female contralto vocals, spectral vocal warping creating city-wide refrains, no clean pop vocals, sudden structural collapse glitched disruptions, intimate solo sections swell into overwhelming waves of layered synths and wailing treated strings, metallic ledger-tick percussion doubling in speed each section, tape-stop collapse into near silence, deep sub-bass from upright bass, expansive moonglow convolution reverb on all instruments, cavernous dark hall, close dry baritone, wide ghost choir, distorted electric cello played with a metal slide, heavily processed harmonica, borrowed bright note falling back to minor, more cavernous, more desolate, heavier drag, flac quality, 24-bit depth]
 ```
 
-Structural metatags (embed in the lyrics field):
+Lyrics field (paste-ready: structural metatags with the lyrics; parentheses are backing/answer vocals):
 
 ```
 [Intro: Instrumental, sub drone, breathy harmonica, single ticking click]
+
 [Verse 1: Sparse, upright and rim only, solo baritone]
+Third round’s on me, I’m waving off the menu.
+The card reader chirps approved, like it’s proud of me.
+I tip in twenties I haven’t earned yet,
+the waiter calls me boss twice, in case I missed it.
+
 [Pre-Chorus 1: Contralto answers, rim on 2 and 4, rising cello slide]
+I’ll sort it Monday, I say,
+(Monday?)
+There’s plenty of room on Monday.
+(Whose room?)
+
 [Chorus 1: Full shuffle, octave unison hook, wide pad, choir echo on last word]
+Put it on mine, I’ve got it, I’ve got it.
+Somebody sober will sign on Monday.
+Whoever he is, he can have the receipt —
+I’ll pay you tomorrow.
+
 [Post-Chorus Tag: Instrumental, harmonica and cello trade the motif]
+
 [Verse 2: Baritone, harmonica sighs, wash fades in]
+Sunday, the statement’s under a pizza magnet,
+so I open it standing up, still in my coat.
+A scarf for my sister, who’d said she was fine.
+Minimum due: forty-one. I read it twice.
+
 [Pre-Chorus 2: Contralto leads, wailing strings enter]
+It’s Monday. Look at the screen.
+(I’m looking.)
+Then look at the number.
+(I’m looking.)
+
 [Chorus 2: Full band, wailing strings, loudest drop, long choir tail]
+Put it on mine, I’ve got it, I’ve got it.
+Somebody sober will sign on Monday.
+Whoever he is, he can have the receipt —
+I’ll pay you tomorrow.
+
 [Collapse: Tape-stop, then silence]
+
 [Bridge: Strip back, solo contralto over sub, heartbeat ticks]
+Coffee place, ten past seven, line behind me.
+She says, Do you have another card?
+I do. That’s the thing. I always do.
+
 [Solo: Intimate slide cello building to a wave of synths and wailing strings]
+
 [Final Chorus: Climax, full drums, full choir block, wide wailing strings]
+Put it on mine, I’ve got it, I’ve got it.
+Somebody sober signed it on Monday.
+Turns out he’s me, and he kept the receipt —
+I’m paying today.
+
 [Wave Tag: Instrumental, wordless choir, maximum wail]
+
 [Outro: Layers fade out, single tick, sub fades]
+
 ```
 
 ## 6. Hit Architecture Compliance
@@ -278,7 +368,7 @@ Structural metatags (embed in the lyrics field):
 |--------|------------|-------|
 | **Melodic Cell** | ✅ | **B – G♯ – G – F – E** (5 notes). Seeded in the intro: HARP breathes it as free pitches in bars 3–4. Echoed: HARP states it over Am7 → Fmaj7♯11 in the pre-chorus (same notes, new harmony). Paid off: the chorus hook, octave unison, G♯ on the strong beat. Callback: the contralto hums B – G♯ – G in the bridge (bar 7); a CELLO harmonic in the outro. |
 | **Early Hook Entry** | ✅ | First chorus lands at **0:46** (ceiling 0:60); verse 1 is 8 bars, pre-chorus ≤ 4 bars. 16-bar runway: intro 4 + verse 8 + pre-chorus 4. A 4-bar post-chorus tag follows chorus 1 as the clip-able hook loop. |
-| **Bilingual Singback** | ⚠️ Deferred | Arrangement-only pass — no lyrics yet. The hook slot is designed as ≤ 4 vowel-led syllables on the Melodic Cell so a bilingual singback line can drop in when lyrics are written. |
+| **Bilingual Singback** | ✅ | The hook is “I’ll pay you tomorrow” — short, repeated verbatim, and ending on an open vowel with a hummable consonant, so it can be sung back phonetically after two hearings. English-only by design; a second-language line could replace the hook’s words without changing the melody. |
 | **Spatial Storytelling** | ✅ | Verse: narrow, dry, close-mic baritone, half-time kit, half the arrangement left empty. Chorus: the Convolver send opens from ~12% to ~45% (the room grows), SUB opens to its full 41 Hz, MOON widens the stereo field, vocals double in octaves and the spectral choir blooms on the last word. The chorus is a bigger room, not just a higher fader. |
 | **Production Switch** | ✅ | Kick goes from one soft hit per bar to kick + the ‘a’ of 2; SUB enters at full weight; MOON pad widens the image; the lead doubles in octave unison; the Ticker doubles from 2 to 4 per bar. |
 
@@ -298,5 +388,43 @@ Structural metatags (embed in the lyrics field):
 | Drums | Drumaxx | Slow Beat MC (shuffle body) + Metallic SPYRO (industrial) | Slow Beat MC re-gridded to triplets. Ticker lane: Metallic SPYRO closed-hat tick, high-pass 3 kHz, hard right; tick count 1 → 2 → 4 → 8 per bar by section. |
 | Vocals | — (recorded) | — | Spectral choir: duplicate the lead on 3 lanes → Frequency Shifter / Vocodex at +12, −12, +7 semitones, 1/2-beat, 1-beat and 2-beat delays, each darker. |
 | Master / sends | Fruity Convolver + ValhallaVintageVerb + Gross Beat + Maximus | dark cistern IR (5–7 s) | Convolver = master send (100% wet in intro bar 1, ~40% by bar 4; ~12% verses, ~45% choruses). Gross Beat tape-stop on the collapse; Maximus 2–4 kHz band keyed from the vocal bus. |
+
+### Lyric Craft Notes
+
+- **Theme Brief:** chassis — Joy & Celebration — joy you didn’t earn and keep anyway; undertow — Time & Mortality — the deadline that reorders your loves (here: Monday); pattern — Disguise — a good night wearing a payment schedule.
+- **Central question:** If tonight goes on the card, who is standing at the register on Monday?
+- **Anchor images:** the card reader’s chirp and the waiter’s ‘boss’ (V1) · the pizza magnet and the minimum due (V2) · ten past seven at the coffee place (bridge) · the receipt (chorus).
+- **Merged cliché traps (added to the banned list for this song):** Joy: party-anthem hedonism with no stakes · Time: hourglass and candle countdowns. The word ‘tomorrow’ appears only in the hook; the theme is otherwise enacted, never named.
+- **Hook:** “I’ll pay you tomorrow” — I’ll (B) · PAY (G♯, the strong beat) · you (G) · to- (F) · MOR-row (E, held on the open ‘oh’). Final chorus: “I’m paying today” — I’m (B) · PAY (G) · ing (G) · to- (F) · DAY (E, open ‘ay’); no G♯.
+- **Self-check:** banned phrases, banned rhyme pairs and ‘Every X / Every Y’ constructions were checked by script (0 found). Everything else — specificity, conversational tone, V2 development, detail density, stress — was read by hand, and syllable counts come from a heuristic counter that was spot-checked. An independent `/ace-audit` pass is still recommended.
+
+**Syllable budget** (parallel sections; ±2 allowed)
+
+Verse 1 → Verse 2
+
+| Line | Verse 1 | Verse 2 | Δ | ±2 |
+|---|---|---|---|---|
+| 1 | 11 | 12 | +1 | ✅ |
+| 2 | 12 | 12 | +0 | ✅ |
+| 3 | 10 | 11 | +1 | ✅ |
+| 4 | 12 | 11 | -1 | ✅ |
+
+Pre-Chorus 1 → Pre-Chorus 2
+
+| Line | Pre-Chorus 1 | Pre-Chorus 2 | Δ | ±2 |
+|---|---|---|---|---|
+| 1 | 7 | 7 | +0 | ✅ |
+| 2 | 8 | 6 | -2 | ✅ |
+
+Chorus 1 → Final Chorus
+
+| Line | Chorus 1 | Final Chorus | Δ | ±2 |
+|---|---|---|---|---|
+| 1 | 10 | 10 | +0 | ✅ |
+| 2 | 10 | 10 | +0 | ✅ |
+| 3 | 11 | 10 | -1 | ✅ |
+| 4 | 6 | 5 | -1 | ✅ |
+
+**Hardest line to sing:** “The card reader chirps *approved*, like it’s proud of me.” — ‘card reader chirps approved’ packs rd-r / rps-ap consonant runs into the first beat at 84 BPM.
 
 [← Album overview](README.md)
