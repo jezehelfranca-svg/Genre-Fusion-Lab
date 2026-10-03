@@ -125,14 +125,14 @@ In addition, you MUST invent a Fictional EP Tracklist consisting of exactly 3 di
 
 TRACK TITLE RULES (craft each title like a songwriter, not a generator):
 - This EP's title imagery well is: ${titleFlavor}. Let at least two of the three titles drink from it.
-- BANNED title words unless deliberately subverted: Neon, Echo, Echoes, Midnight, Shadow, Shadows, Whisper, Whispers, Dream, Dreams, Void, Eternal, Static, Pulse, Horizon.
+- BANNED title words unless deliberately subverted: Neon, Echo, Echoes, Midnight, Shadow, Shadows, Whisper, Whispers, Dream, Dreams, Void, Eternal, Static, Pulse, Horizon, Ignite, Heartbeat, Overdrive, Digital, Symphony.
 - Each of the 3 titles MUST use a DIFFERENT technique from this list: (a) a concrete image doing an unexpected verb, (b) invented scene slang or a non-English phrase rooted in the fused cultures, (c) the name of a character or place from the EP's story world, (d) a technical or production term used poetically, (e) a fragment of overheard dialogue or a question.
 - All three titles must feel like they belong to the same fictional scene and its Creative Catalyst — a shared world, not three random songs.
 
 STORY RULES (each track's Story & Context):
 - 3 to 5 sentences, written as vivid liner-note storytelling, ALL ON ONE SINGLE LINE (no line breaks inside).
 - Each story MUST contain: a named person or place, one concrete sensory detail, one surprising incident or conflict, and a thread connecting it to the Creative Catalyst.
-- Weave in exactly ONE quoted signature lyric line per story (in "double quotes") that matches the track's vocal style and could be sung as a hook.
+- Weave in exactly ONE quoted signature lyric line per story (in "double quotes") that matches the track's vocal style and could be sung as a hook. It must obey the LYRIC RULES below.
 - The three stories MUST form an arc across the EP: Track 1 is the incident or origin, Track 2 is the confession or character piece, Track 3 is the myth or aftermath.
 
 Each track MUST follow this strict structural formatting so it can be parsed cleanly:
@@ -155,18 +155,38 @@ Near the end of your response, you MUST include a section with the exact title:
 Followed by a single-paragraph brief description consolidating everything generated, using a comma to separate each dimension and value. For example:
 "Genre: Blues-Wave, Sound: Electro-acoustic slide guitar with synth bass, Central Instruments: Hohner Clavinet and Roland TR-808, Fictional Band: Neon Muddy, Debut Track: Voltage River, Vibe: Swampy atmospheric cyber-blues"
 
-Finally, you MUST end the response with one last section with the exact title:
+LYRIC RULES (apply to every lyric line anywhere in the response):
+- NEVER use these words in any form: neon, shadows, static, whisper, ignite, heartbeat, overdrive, echo, digital, symphony, pulse.
+- No AABB couplets. Mix line lengths, prefer slant rhymes, and build every section from concrete, physical nouns (objects, places, times, prices).
+
+After the Consolidated Brief Summary, include a section with the exact title:
+### Lyrics & Metatags Blueprint
+Followed by the complete lyric for Track 1, inside a single \`\`\`text fenced code block, following the LYRIC RULES:
+- Use the Track 1 story's quoted signature line as the chorus hook.
+- Sections: [Intro], [Verse 1], [Pre-Chorus], [Chorus], [Verse 2], [Instrumental Bridge], [Final Chorus], [Outro - Fade]. Add functional tags such as [Bassline Drop] or [Breakdown] where this genre's arrangement calls for them, and give section tags an arrangement job after a dash, e.g. [Intro - Kora Alone].
+- Verse 2 moves time, stakes or camera forward; the final chorus changes one detail from the first chorus.
+- Put every arrangement direction in square brackets. Never put directions in parentheses, because Suno sings parenthesized text.
+
+Then include a section with the exact title:
 ### Suno Style Prompt
 Followed by ONE single plain-text paragraph of AT MOST 950 characters (strictly under 1000). This paragraph gets pasted directly into the "Style of Music" field of AI music generators like Suno, so it must obey these rules:
 - Strictly start with the invented fusion genre name, followed by the parent input ingredients in parentheses separated by " + ", followed by a comma: "[Fusion Genre Name] ([Input Genre 1] + [Input Genre 2] + ...), "
-- Immediately followed by an evocative single-sentence description of the sonic grafting, detailing how the distinctive chords, instruments, production signatures, and rhythmic clash are transplanted or fused together into a vivid sonic collision.
+- Then follow the GMIV+P+Era order, as comma-separated phrases:
+  G (Genre & Subgenres): one or two specific micro-genres or subgenres the fusion sits closest to (never a broad label like "pop" alone).
+  M (Mood & Energy): emotional tone, scene and energy level.
+  I (Instrumentation & Tempo): exact BPM, then the named instrument roster with playing style, and one dynamic choice.
+  V (Vocals): timbre, range, processing and delivery (or "instrumental" if the fusion has no vocals).
+  P+Era (Production & Time Period): mix characteristics anchored to a decade or studio era.
+- Describe only what should be heard. NEVER write "avoid", "no ..." or "without ..." here; everything to keep out goes in Exclude Styles.
 - Plain text only: single paragraph, no markdown styling, no asterisks, no headings, no quotes wrapping the entire prompt, and no line breaks inside the paragraph.
 - NEVER mention real artist or band names (music generators reject them) — describe the chords, instruments, textures, and rhythms directly instead.
 - Strictly under 1000 characters (aim for concise, punchy impact).
-- Exact format:
-[Fusion Genre Name] ([Ingredient 1] + [Ingredient 2]), [vivid sonic collision sentence describing how the distinctive chords, instruments, and rhythms are transplanted/fused together]
 - Example of the expected format:
-City-Pop-Drill (Japanese City Pop + UK Drill), luxurious 1980s Japanese City Pop electric piano chords and funky horn stabs are jarringly transplanted onto a dark, sliding UK drill 808 rhythm
+City-Pop-Drill (Japanese City Pop + UK Drill), 1980s Japanese City Pop, UK drill, nocturnal, glossy, tense late-night drive, 142 BPM half-time, bright electric piano chords, funky horn stabs, sliding 808 bass, skippy drill hi-hats, male lead with dry close-mic delivery and double-tracked chorus, late 1980s analog console warmth meets crisp 2020s low end, wide stereo field
+
+Finally, you MUST end the response with one last section with the exact title:
+### Exclude Styles
+Followed by ONE single plain-text line of 3 to 6 comma-separated elements that oppose this fusion's sound, drawn from opposing genres, opposing textures and vocal artifacts (for example: trap hi-hats, autotune, distorted guitar, lo-fi hiss, acoustic folk). Never exclude anything the Suno Style Prompt or the input elements ask for. This line gets pasted into Suno's "Exclude Styles" field.
 
 Keep it imaginative but format it nicely. Use headings, bullet points, and bold text.`;
 
