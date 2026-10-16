@@ -170,8 +170,9 @@ Keep it imaginative but format it nicely. Use headings, bullet points, and bold 
       const modelsToTry = [
         requestedModel,
         'gemini-3.8-flash',
-        'gemini-2.5-flash',
-        'gemini-2.5-flash-lite'
+        'gemini-3.5-flash',
+        'gemini-3.5-flash-lite',
+        'gemini-2.5-flash'
       ].filter((v, i, a) => a.indexOf(v) === i);
       let responseText = '';
       let lastError: any = null;
@@ -283,7 +284,7 @@ Only output items that are actually present in the official lists above inside t
       formattedPrompt += `\nGemma (response to the latest user request):`;
 
       // Fallback model list prioritizing Gemini 3.8 to maximize quality & availability
-      const modelsToTry = ["gemini-3.8-flash", "gemini-2.5-flash", "gemini-2.5-flash-lite"];
+      const modelsToTry = ["gemini-3.8-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-2.5-flash"];
       let lastError: any = null;
       let responseText = "";
 
