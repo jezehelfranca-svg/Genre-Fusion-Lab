@@ -165,15 +165,14 @@ City-Pop-Drill (Japanese City Pop + UK Drill), luxurious 1980s Japanese City Pop
 
 Keep it imaginative but format it nicely. Use headings, bullet points, and bold text.`;
 
-      // Robust model fallback chain prioritizing Gemini 3.8
-      const requestedModel = (req.body.model || process.env.GEMINI_MODEL || 'gemini-3.8-flash').trim();
+      // Robust model fallback chain prioritizing available models
+      const requestedModel = (req.body.model || process.env.GEMINI_MODEL || 'gemini-3.5-flash').trim();
       const modelsToTry = [
         requestedModel,
-        'gemini-3.8-flash',
         'gemini-3.5-flash',
-        'gemini-3.5-flash-lite',
-        'gemini-2.5-flash'
-      ].filter((v, i, a) => a.indexOf(v) === i);
+        'gemini-2.5-flash',
+        'gemini-3.8-flash',
+      ].filter((v, i, a) => Boolean(v) && a.indexOf(v) === i);
       let responseText = '';
       let lastError: any = null;
 
@@ -189,6 +188,7 @@ Keep it imaginative but format it nicely. Use headings, bullet points, and bold 
                 systemInstruction: "You are an imaginative music genre expert who despises clichés and hunts for the surprising-but-true detail.",
                 temperature: modeConfig.temperature,
                 topP: 0.95,
+                thinkingConfig: { thinkingBudget: 0 },
               }
             });
             if (resData && resData.text) {
