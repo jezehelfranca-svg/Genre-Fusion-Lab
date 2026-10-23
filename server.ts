@@ -166,12 +166,16 @@ City-Pop-Drill (Japanese City Pop + UK Drill), luxurious 1980s Japanese City Pop
 Keep it imaginative but format it nicely. Use headings, bullet points, and bold text.`;
 
       // Robust model fallback chain prioritizing available models
-      const requestedModel = (req.body.model || process.env.GEMINI_MODEL || 'gemini-3.5-flash').trim();
+      const requestedModel = (req.body.model || process.env.GEMINI_MODEL || 'gemini-3.8-flash').trim();
       const modelsToTry = [
         requestedModel,
-        'gemini-3.5-flash',
-        'gemini-2.5-flash',
         'gemini-3.8-flash',
+        'gemini-3.7-flash',
+        'gemini-flash-latest',
+        'gemini-3.5-flash-lite',
+        'gemini-3.1-flash-lite',
+        'gemini-flash-lite-latest',
+        'gemini-3.5-flash',
       ].filter((v, i, a) => Boolean(v) && a.indexOf(v) === i);
       let responseText = '';
       let lastError: any = null;
