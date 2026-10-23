@@ -170,13 +170,10 @@ Keep it imaginative but format it nicely. Use headings, bullet points, and bold 
       const modelsToTry = [
         requestedModel,
         'gemini-3.5-flash',
-        'gemini-2.5-flash',
-        'gemini-flash-latest',
-        'gemini-3.5-flash-lite',
-        'gemini-2.5-flash-lite',
-        'gemini-flash-lite-latest',
         'gemini-3.7-flash',
         'gemini-3.8-flash',
+        'gemini-3.5-flash-lite',
+        'gemini-3.1-flash-lite',
       ].filter((v, i, a) => Boolean(v) && a.indexOf(v) === i);
       let responseText = '';
       let lastError: any = null;
@@ -186,15 +183,18 @@ Keep it imaginative but format it nicely. Use headings, bullet points, and bold 
         while (attempt <= 2) {
           try {
             console.log(`Attempting generation with model ${model} (attempt ${attempt})...`);
+            const genConfig: any = {
+              systemInstruction: "You are an imaginative music genre expert who despises clichés and hunts for the surprising-but-true detail.",
+              temperature: modeConfig.temperature,
+              topP: 0.95,
+            };
+            if (!model.includes('lite')) {
+              genConfig.thinkingConfig = { thinkingBudget: 0 };
+            }
             const resData = await ai.models.generateContent({
               model,
               contents: prompt,
-              config: {
-                systemInstruction: "You are an imaginative music genre expert who despises clichés and hunts for the surprising-but-true detail.",
-                temperature: modeConfig.temperature,
-                topP: 0.95,
-                thinkingConfig: { thinkingBudget: 0 },
-              }
+              config: genConfig,
             });
             if (resData && resData.text) {
               responseText = resData.text;
